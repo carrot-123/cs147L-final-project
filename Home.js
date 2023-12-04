@@ -55,23 +55,25 @@ const INITIAL_BOXES = [
 let currentId = 4;
 
 const boxesReducer = (boxes, action) => {
-  console.log(boxes.INITIAL_BOXES[0].time);
-  console.log(action.value);
-
   if (action.type === "filtered") {
     if (action.value.length === 0) {
+      console.log("here");
       return {
         ...boxes,
-        filtered: [],
-        // select only a few values from async storage
+        filtered: ["None"],
       };
     }
-    console.log(action.value.length);
     return {
       ...boxes,
       filtered: boxes.INITIAL_BOXES.filter((box) => {
-        return action.value.includes(box.time) || box.time === "Anytime";
-        // select only a few values from async storage
+        if (action.value.length === 1 && action.value.includes("Starred")) {
+          return box.starred;
+        } else if (action.value.includes("Starred")) {
+          console.log(action.value.includes(box.time));
+          return box.starred && action.value.includes(box.time);
+        } else {
+          return action.value.includes(box.time) || box.time === "Anytime";
+        }
       }),
     };
   } else {

@@ -14,10 +14,10 @@ export default function BoxList() {
     />
   );
 
-  if (boxes.filtered.length > 0) {
+  if (boxes.filtered.length !== 0 && boxes.filtered[0] === "None") {
     return (
       <FlatList
-        data={boxes.filtered}
+        data={boxes.INITIAL_BOXES}
         renderItem={({ item, index }) => renderBox({ item, index })}
         keyExtractor={(item) => item.index}
       />
@@ -25,7 +25,7 @@ export default function BoxList() {
   } else {
     return (
       <FlatList
-        data={boxes.INITIAL_BOXES}
+        data={boxes.filtered}
         renderItem={({ item, index }) => renderBox({ item, index })}
         keyExtractor={(item) => item.index}
       />

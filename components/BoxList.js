@@ -13,11 +13,22 @@ export default function BoxList() {
       desc={item.desc}
     />
   );
-  return (
-    <FlatList
-      data={boxes}
-      renderItem={({ item, index }) => renderBox({ item, index })}
-      keyExtractor={(item) => item.index}
-    />
-  );
+
+  if (boxes.filtered.length > 0) {
+    return (
+      <FlatList
+        data={boxes.filtered}
+        renderItem={({ item, index }) => renderBox({ item, index })}
+        keyExtractor={(item) => item.index}
+      />
+    );
+  } else {
+    return (
+      <FlatList
+        data={boxes.INITIAL_BOXES}
+        renderItem={({ item, index }) => renderBox({ item, index })}
+        keyExtractor={(item) => item.index}
+      />
+    );
+  }
 }

@@ -8,7 +8,7 @@ import {
   Pressable,
   AsyncStorage,
 } from "react-native";
-import { useCallback, useReducer, useState } from "react";
+import { useCallback, useReducer, useState, useEffect } from "react";
 import { SegmentedButtons, Icon, useTheme } from "react-native-paper";
 import { Images, Themes } from "./assets/Themes";
 import { useFonts } from "expo-font";
@@ -21,7 +21,7 @@ const INITIAL_BOXES = [
   {
     id: 0,
     name: "Finals Weekend",
-    time: "DAY",
+    time: "Day",
     desc: "For that rough time before finals.",
     imageUrl: "",
     starred: false,
@@ -29,7 +29,7 @@ const INITIAL_BOXES = [
   {
     id: 1,
     name: "For a Good Night's Sleep",
-    time: "NIGHT",
+    time: "Night",
     desc: "I want to sleep ;-;",
     imageUrl: "",
     starred: true,
@@ -37,7 +37,7 @@ const INITIAL_BOXES = [
   {
     id: 2,
     name: "For when I am sad",
-    time: "ANYTIME",
+    time: "Anytime",
     desc: "I will provide better descriptions",
     imageUrl: "",
     starred: false,
@@ -45,7 +45,7 @@ const INITIAL_BOXES = [
   {
     id: 3,
     name: "Finals Weekend",
-    time: "day",
+    time: "Day",
     desc: "For that rough time before finals.",
     imageUrl: "",
     starred: true,
@@ -55,18 +55,51 @@ const INITIAL_BOXES = [
 let currentId = 4;
 
 const boxesReducer = (boxes, action) => {
-  console.log(action);
+  console.log(boxes.INITIAL_BOXES[0].time);
+  console.log(action.value);
+
+  if (action.type === "filtered") {
+    if (action.value.length === 0) {
+      return {
+        ...boxes,
+        filtered: [],
+        // select only a few values from async storage
+      };
+    }
+    console.log(action.value.length);
+    return {
+      ...boxes,
+      filtered: boxes.INITIAL_BOXES.filter((box) => {
+        return action.value.includes(box.time) || box.time === "Anytime";
+        // select only a few values from async storage
+      }),
+    };
+  } else {
+    console.error("Unrecognized action", action.type);
+  }
 };
 
 SplashScreen.preventAutoHideAsync();
 export default function Home() {
-  const [boxes, setBoxes] = useState(INITIAL_BOXES);
+  const [value, setValue] = useState([]);
+  const [boxes, dispatch] = useReducer(boxesReducer, {
+    INITIAL_BOXES,
+    filtered: null,
+  });
 
   const [fontsLoaded] = useFonts({
     Montserrat: require("./assets/Fonts/Montserrat-Regular.ttf"),
     "Montserrat-Bold": require("./assets/Fonts/Montserrat-Bold.ttf"),
   });
-
+  useEffect(() => {
+    const handleFilterBoxes = () => {
+      dispatch({
+        type: "filtered",
+        value: value,
+      });
+    };
+    handleFilterBoxes();
+  }, [value]);
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
       await SplashScreen.hideAsync();
@@ -74,8 +107,6 @@ export default function Home() {
   }, [fontsLoaded]);
 
   if (!fontsLoaded) return null;
-
-  //const [boxes, dispatch] = useReducer(boxesReducer, INITIAL_BOXES);
 
   return (
     <BoxesContext.Provider value={boxes}>
@@ -86,29 +117,39 @@ export default function Home() {
           </View>
           <View style={styles.body}>
             <SegmentedButtons
+              multiSelect={true}
+              onValueChange={setValue}
+              value={value}
               style={styles.segmentedButton}
               buttons={[
                 {
+                  value: "Starred",
                   label: "Starred",
-
                   labelStyle: styles.buttonLabelText,
 
                   style: { backgroundColor: "#CEDC9D" },
+                  showSelectedCheck: true,
                 },
                 {
+                  value: "Morning",
+                  label: "Morning",
+                  labelStyle: styles.buttonLabelText,
+                  style: { backgroundColor: "#CEDC9D" },
+                  showSelectedCheck: true,
+                },
+                {
+                  value: "Day",
                   label: "Day",
                   labelStyle: styles.buttonLabelText,
                   style: { backgroundColor: "#CEDC9D" },
+                  showSelectedCheck: true,
                 },
                 {
+                  value: "Night",
                   label: "Night",
                   labelStyle: styles.buttonLabelText,
                   style: { backgroundColor: "#CEDC9D" },
-                },
-                {
-                  label: "Anytime",
-                  labelStyle: styles.buttonLabelText,
-                  style: { backgroundColor: "#CEDC9D" },
+                  showSelectedCheck: true,
                 },
               ]}
             />

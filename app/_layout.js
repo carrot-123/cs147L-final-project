@@ -1,16 +1,19 @@
 import { Stack } from "expo-router/stack";
+import { IconButton } from "react-native-paper";
+import { Pressable, StyleSheet, Text, View, Button } from "react-native";
+import { AntDesign } from "@expo/vector-icons";
 
 export default function Layout() {
   return (
     <Stack
       screenOptions={{
         headerStyle: {
-          backgroundColor: "black",
+          backgroundColor: "white",
         },
-        headerTintColor: "white",
+        headerTintColor: "black",
         headerTitleStyle: {
           fontWeight: "bold",
-          color: "white",
+          color: "black",
         },
       }}
     >
@@ -22,9 +25,16 @@ export default function Layout() {
       />
       <Stack.Screen
         name="DetailScreen"
-        options={{
-          title: "Box details",
-        }}
+        options={() => ({
+          title: "What's in this box",
+        })}
+      />
+      <Stack.Screen
+        name="EditBox"
+        options={() => ({
+          title: "Edit self care box",
+          animation: "slide_from_bottom",
+        })}
       />
     </Stack>
   );

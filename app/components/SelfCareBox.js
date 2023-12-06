@@ -4,7 +4,7 @@ import { useCallback, useState } from "react";
 import { Icon, useTheme } from "react-native-paper";
 import { Images, Themes } from "../../assets/Themes";
 import { Link } from "expo-router";
-
+import { AntDesign } from "@expo/vector-icons";
 export default function SelfCareBox({
   index,
   name,
@@ -49,11 +49,12 @@ export default function SelfCareBox({
             maxHeight: 40,
           }}
         >
-          <Icon source={"clock"} color="#CEDC9D" size={25} />
+          <AntDesign name="clockcircle" size={25} color="#CEDC9D" />
+
           <Text style={styles.body}>{time}</Text>
         </View>
 
-        <Text style={styles.body}>{desc}</Text>
+        <Text style={styles.desc}>{desc}</Text>
       </View>
     </View>
   );
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    height: 180,
+
     width: 300,
     marginTop: 20,
   },
@@ -80,7 +81,7 @@ const styles = StyleSheet.create({
   },
   button: {
     width: "100%",
-    height: "50%",
+    height: 100,
     backgroundColor: "#CEDC9D",
     borderRadius: 6,
   },
@@ -89,6 +90,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   body: {
+    fontFamily: "Montserrat",
+  },
+  desc: {
     fontFamily: "Montserrat",
   },
 });

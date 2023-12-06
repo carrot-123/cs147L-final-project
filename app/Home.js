@@ -20,9 +20,9 @@ import BoxesContext from "./BoxesContext.js";
 const INITIAL_BOXES = [
   {
     id: 0,
-    name: "Finals Weekend",
+    name: "Test for very very very very very very very long titles!",
     time: "Day",
-    desc: "For that rough time before finals.",
+    desc: "Test for very very very very very very very very very very very very very very very very long descriptions",
     imageUrl: "",
     starred: false,
 
@@ -118,6 +118,8 @@ export default function Home() {
   const [fontsLoaded] = useFonts({
     Montserrat: require("../assets/Fonts/Montserrat-Regular.ttf"),
     "Montserrat-Bold": require("../assets/Fonts/Montserrat-Bold.ttf"),
+    "Montserrat-Medium": require("../assets/Fonts/Montserrat-Medium.ttf"),
+    "Montserrat-Italic": require("../assets/Fonts/Montserrat-Italic.ttf"),
   });
   useEffect(() => {
     const handleFilterBoxes = () => {

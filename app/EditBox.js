@@ -39,9 +39,16 @@ import { Link } from "expo-router";
 export default function EditBox() {
   const params = useLocalSearchParams();
   const [visible, setVisible] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState();
+
   const [value, setValue] = useState("first");
-  const [text, setText] = useState(undefined);
+  const [nameText, setnameText] = useState(undefined);
+  const [timeText, setTimeText] = useState(undefined);
+  const [descText, setDescText] = useState(undefined);
+  const [routineText, setRoutineText] = useState(undefined);
+  const [itemsText, setItemsText] = useState(undefined);
+  const [playlistsText, setPlaylistsText] = useState(undefined);
+  const [wordsText, setWordsText] = useState(undefined);
+
   const pickerRef = useRef();
 
   function open() {
@@ -94,8 +101,8 @@ export default function EditBox() {
               label={<Text style={styles.label}>Name</Text>}
               multiline={true}
               defaultValue={params.name}
-              onChangeText={(text) => setText(text)}
-              value={text}
+              onChangeText={(text) => nameText(text)}
+              value={nameText}
             />
             <View style={styles.radioButtonSection}>
               <Text style={[styles.label, { fontSize: 15 }]}>Time</Text>
@@ -127,43 +134,45 @@ export default function EditBox() {
               mode="flat"
               label={<Text style={styles.label}>Description</Text>}
               multiline={true}
-              onChangeText={(text) => setText(text)}
+              onChangeText={(text) => setDescText(text)}
               defaultValue={params.desc}
-              value={text}
+              value={descText}
             />
             <TextInput
               style={styles.body}
               mode="flat"
               label={<Text style={styles.label}>Self Care Routine</Text>}
               multiline={true}
-              onChangeText={(text) => setText(text)}
+              onChangeText={(text) => setRoutineText(text)}
               defaultValue={params.routine.replaceAll(",", "\n")}
-              value={text}
+              value={routineText}
             />
             <TextInput
               style={styles.body}
               mode="flat"
               label={<Text style={styles.label}>Items Neeeded</Text>}
               multiline={true}
-              onChangeText={(text) => setText(text)}
+              onChangeText={(text) => setItemsText(text)}
               defaultValue={params.itemsNeeded.replaceAll(",", "\n")}
-              value={text}
+              value={itemsText}
             />
             <TextInput
               style={styles.body}
               mode="flat"
               label={<Text style={styles.label}>Recommended Playlists</Text>}
               multiline={true}
-              onChangeText={(text) => setText(text)}
+              onChangeText={(text) => setPlaylistsText(text)}
               defaultValue={params.playlists.replaceAll(",", "\n")}
-              value={text}
+              value={playlistsText}
             />
             <TextInput
               style={styles.body}
               mode="flat"
               label={<Text style={styles.label}>Words of Affirmation</Text>}
               multiline={true}
-              value={params.words}
+              onChangeText={(text) => setWordsText(text)}
+              defaultValue={params.words}
+              value={wordsText}
             />
             <Pressable style={styles.deleteButton}>
               <Text style={{ fontFamily: "Montserrat", color: "red" }}>

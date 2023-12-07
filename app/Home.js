@@ -18,6 +18,7 @@ import BoxList from "./components/BoxList.js";
 import BoxesContext from "./BoxesContext.js";
 import { AntDesign } from "@expo/vector-icons";
 import { Link } from "expo-router";
+import Supabase from "./Supabase.js";
 
 const INITIAL_BOXES = [
   {
@@ -90,19 +91,25 @@ const boxesReducer = (boxes, action) => {
         filtered: ["None"],
       };
     }
+    console.log(boxes);
     return {
       ...boxes,
-      filtered: boxes.INITIAL_BOXES.filter((box) => {
+      filtered: boxes.newBoxes.filter((box) => {
         if (action.value.length === 1 && action.value.includes("Starred")) {
           return box.starred;
         } else if (action.value.includes("Starred")) {
-          console.log(action.value.includes(box.time));
+          console.log(box);
           return box.starred && action.value.includes(box.time);
         } else {
           return action.value.includes(box.time) || box.time === "Anytime";
         }
       }),
     };
+  } else if (action.type === "getBoxes") {
+    console.log("here!!!");
+    console.log(action.value);
+    const newBoxes = action.value;
+    return { newBoxes, filtered: ["None"] };
   } else {
     console.error("Unrecognized action", action.type);
   }
@@ -116,12 +123,14 @@ export default function Home() {
     filtered: null,
   });
 
-  const [fontsLoaded] = useFonts({
-    Montserrat: require("../assets/Fonts/Montserrat-Regular.ttf"),
-    "Montserrat-Bold": require("../assets/Fonts/Montserrat-Bold.ttf"),
-    "Montserrat-Medium": require("../assets/Fonts/Montserrat-Medium.ttf"),
-    "Montserrat-Italic": require("../assets/Fonts/Montserrat-Italic.ttf"),
-  });
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await Supabase.from("selfCareBoxes").select("*");
+
+      dispatch({ type: "getBoxes", value: response.data });
+    };
+    fetchData();
+  }, []);
   useEffect(() => {
     const handleFilterBoxes = () => {
       dispatch({
@@ -131,6 +140,13 @@ export default function Home() {
     };
     handleFilterBoxes();
   }, [value]);
+
+  const [fontsLoaded] = useFonts({
+    Montserrat: require("../assets/Fonts/Montserrat-Regular.ttf"),
+    "Montserrat-Bold": require("../assets/Fonts/Montserrat-Bold.ttf"),
+    "Montserrat-Medium": require("../assets/Fonts/Montserrat-Medium.ttf"),
+    "Montserrat-Italic": require("../assets/Fonts/Montserrat-Italic.ttf"),
+  });
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
       await SplashScreen.hideAsync();

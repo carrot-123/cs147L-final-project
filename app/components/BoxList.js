@@ -5,9 +5,11 @@ import SelfCareBox from "./SelfCareBox";
 
 export default function BoxList() {
   const boxes = useContext(BoxesContext);
-  const renderBox = ({ item, index }) => (
+  console.log("overhere");
+  console.log(boxes);
+  const renderBox = ({ item, id }) => (
     <SelfCareBox
-      index={index}
+      id={id}
       name={item.name}
       time={item.time}
       desc={item.desc}
@@ -21,9 +23,9 @@ export default function BoxList() {
   if (boxes.filtered.length !== 0 && boxes.filtered[0] === "None") {
     return (
       <FlatList
-        data={boxes.INITIAL_BOXES}
+        data={boxes.newBoxes}
         renderItem={({ item, index }) => renderBox({ item, index })}
-        keyExtractor={(item) => item.index}
+        keyExtractor={(item) => item.id}
       />
     );
   } else {
@@ -31,7 +33,7 @@ export default function BoxList() {
       <FlatList
         data={boxes.filtered}
         renderItem={({ item, index }) => renderBox({ item, index })}
-        keyExtractor={(item) => item.index}
+        keyExtractor={(item) => item.id}
       />
     );
   }

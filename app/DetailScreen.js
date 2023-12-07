@@ -63,12 +63,12 @@ export default function DetailScreen() {
                   flex: 1,
                   flexDirection: "row",
                   alignItems: "center",
-                  gap: 2,
+                  gap: 10,
                   maxHeight: 40,
                 }}
               >
                 <AntDesign name="clockcircle" size={25} color="#CEDC9D" />
-                <Text style={styles.body}>{params.time}</Text>
+                <Text style={styles.sectionText}>{params.time}</Text>
               </View>
 
               <Text style={styles.body}>{params.desc}</Text>
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     gap: 30,
   },
   sectionText: {
-    fontFamily: "Montserrat-Medium",
+    fontFamily: "Montserrat-Bold",
     fontSize: 16,
   },
   listSection: {

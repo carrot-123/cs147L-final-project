@@ -1,5 +1,5 @@
-import Home from "./Home";
+import { Redirect } from "expo-router";
 
 export default function App() {
-  return <Home />;
+  return <Redirect href={"/Home"} />;
 }

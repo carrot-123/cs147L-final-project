@@ -45,13 +45,15 @@ export default function SelfCareBox({
             flex: 1,
             flexDirection: "row",
             alignItems: "center",
-            gap: 2,
+            gap: 10,
             maxHeight: 40,
           }}
         >
           <AntDesign name="clockcircle" size={25} color="#CEDC9D" />
 
-          <Text style={styles.body}>{time}</Text>
+          <Text style={{ fontFamily: "Montserrat-Bold", fontSize: 16 }}>
+            {time}
+          </Text>
         </View>
 
         <Text style={styles.desc}>{desc}</Text>
@@ -78,6 +80,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "left",
     justifyContent: "flex-start",
+    gap: 5,
   },
   button: {
     width: "100%",

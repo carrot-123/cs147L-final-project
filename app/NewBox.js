@@ -36,7 +36,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { Stack } from "expo-router";
 import { Link } from "expo-router";
 
-export default function EditBox() {
+export default function NewBox() {
   const params = useLocalSearchParams();
   const [visible, setVisible] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState();
@@ -52,7 +52,6 @@ export default function EditBox() {
     pickerRef.current.blur();
   }
 
-  console.log(params.routine);
   return (
     <>
       <Stack.Screen
@@ -60,17 +59,7 @@ export default function EditBox() {
           headerRight: () => (
             <Link
               href={{
-                pathname: "/DetailScreen",
-                params: {
-                  index: params.index,
-                  name: params.name,
-                  time: params.time,
-                  desc: params.desc,
-                  routine: params.routine,
-                  itemsNeeded: params.itemsNeeded,
-                  playlists: params.playlists,
-                  words: params.words,
-                },
+                pathname: "/Home",
               }}
               asChild
             >
@@ -93,9 +82,9 @@ export default function EditBox() {
               mode="flat"
               label={<Text style={styles.label}>Name</Text>}
               multiline={true}
-              defaultValue={params.name}
               onChangeText={(text) => setText(text)}
               value={text}
+              placeholder="The name of your self care box"
             />
             <View style={styles.radioButtonSection}>
               <Text style={[styles.label, { fontSize: 15 }]}>Time</Text>
@@ -128,8 +117,8 @@ export default function EditBox() {
               label={<Text style={styles.label}>Description</Text>}
               multiline={true}
               onChangeText={(text) => setText(text)}
-              defaultValue={params.desc}
               value={text}
+              placeholder={"A quick description of this self care box"}
             />
             <TextInput
               style={styles.body}
@@ -137,8 +126,10 @@ export default function EditBox() {
               label={<Text style={styles.label}>Self Care Routine</Text>}
               multiline={true}
               onChangeText={(text) => setText(text)}
-              defaultValue={params.routine.replaceAll(",", "\n")}
               value={text}
+              placeholder={
+                "A list of some self care activities\nPut each item on its own line"
+              }
             />
             <TextInput
               style={styles.body}
@@ -146,8 +137,10 @@ export default function EditBox() {
               label={<Text style={styles.label}>Items Neeeded</Text>}
               multiline={true}
               onChangeText={(text) => setText(text)}
-              defaultValue={params.itemsNeeded.replaceAll(",", "\n")}
               value={text}
+              placeholder={
+                "A list of items for self care\nPut each item on its own line"
+              }
             />
             <TextInput
               style={styles.body}
@@ -155,8 +148,10 @@ export default function EditBox() {
               label={<Text style={styles.label}>Recommended Playlists</Text>}
               multiline={true}
               onChangeText={(text) => setText(text)}
-              defaultValue={params.playlists.replaceAll(",", "\n")}
               value={text}
+              placeholder={
+                "Some playlists to watch or listen to\nPut each item on its own line"
+              }
             />
             <TextInput
               style={styles.body}
@@ -164,15 +159,11 @@ export default function EditBox() {
               label={<Text style={styles.label}>Words of Affirmation</Text>}
               multiline={true}
               value={params.words}
+              placeholder="Some affirming words or quotes"
             />
-            <Pressable style={styles.deleteButton}>
-              <Text style={{ fontFamily: "Montserrat", color: "red" }}>
-                Delete Box
-              </Text>
-            </Pressable>
           </View>
           <FAB
-            label="Change cover"
+            label="Set cover"
             style={styles.fab}
             mode="flat"
             onPress={() => console.log("Pressed")}
@@ -248,12 +239,8 @@ const styles = StyleSheet.create({
     padding: 0,
     margin: 0,
   },
-  deleteButton: {
-    border: 1,
-    borderWidth: 1,
-    padding: 10,
-    borderColor: "red",
-    marginLeft: 10,
+  segmentedButton: {
+    width: "90%",
   },
   buttonLabelText: {
     fontSize: 12,

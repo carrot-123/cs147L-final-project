@@ -16,6 +16,8 @@ import * as SplashScreen from "expo-splash-screen";
 import SelfCareBox from "./components/SelfCareBox.js";
 import BoxList from "./components/BoxList.js";
 import BoxesContext from "./BoxesContext.js";
+import { AntDesign } from "@expo/vector-icons";
+import { Link } from "expo-router";
 
 const INITIAL_BOXES = [
   {
@@ -83,7 +85,6 @@ let currentId = 3;
 const boxesReducer = (boxes, action) => {
   if (action.type === "filtered") {
     if (action.value.length === 0) {
-      console.log("here");
       return {
         ...boxes,
         filtered: ["None"],
@@ -142,6 +143,17 @@ export default function Home() {
     <BoxesContext.Provider value={boxes}>
       <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
         <SafeAreaView style={styles.container}>
+          <Link
+            href={{
+              pathname: "/NewBox",
+            }}
+            asChild
+          >
+            <Pressable style={styles.addButton}>
+              <AntDesign name="pluscircleo" size={25} color="black" />
+            </Pressable>
+          </Link>
+
           <View style={styles.header}>
             <Text style={styles.headerText}>Your self care boxes</Text>
           </View>
@@ -197,15 +209,20 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
-    gap: 60,
   },
   header: {
-    //check this
-    top: "5%",
+    paddingBottom: 20,
+    alignSelf: "flex-start",
+    paddingLeft: 20,
+    paddingTop: 10,
+  },
+  addButton: {
+    alignSelf: "flex-end",
+    paddingRight: 20,
+    paddingTop: 5,
   },
   headerText: {
     fontFamily: "Montserrat-Bold",

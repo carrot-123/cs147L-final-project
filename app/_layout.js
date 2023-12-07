@@ -18,7 +18,7 @@ export default function Layout() {
       }}
     >
       <Stack.Screen
-        name="index"
+        name="Home"
         options={{
           headerShown: false,
         }}
@@ -27,6 +27,7 @@ export default function Layout() {
         name="DetailScreen"
         options={() => ({
           title: "What's in this box",
+          headerBackTitleVisible: false,
         })}
       />
       <Stack.Screen
@@ -34,6 +35,15 @@ export default function Layout() {
         options={() => ({
           title: "Edit self care box",
           animation: "slide_from_bottom",
+          headerBackVisible: false,
+        })}
+      />
+      <Stack.Screen
+        name="NewBox"
+        options={() => ({
+          title: "Create a new self care box",
+          animation: "slide_from_bottom",
+          headerBackTitleVisible: false,
         })}
       />
     </Stack>

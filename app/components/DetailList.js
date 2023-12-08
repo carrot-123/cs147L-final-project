@@ -13,12 +13,9 @@ import { List } from "react-native-paper";
 
 export default function DetailList({ listValues }) {
   const listValueArray = listValues.split(",");
-  const listComponent = listValueArray.map(
-    (item) => (
-      console.log(item),
-      (<Text style={styles.listText}>{`\u2022 ${item}`}</Text>)
-    )
-  );
+  const listComponent = listValueArray.map((item) => (
+    <Text key={item} style={styles.listText}>{`\u2022 ${item}`}</Text>
+  ));
   return listComponent;
 }
 

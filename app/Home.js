@@ -19,6 +19,7 @@ import BoxesContext from "./BoxesContext.js";
 import { AntDesign } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import Supabase from "./Supabase.js";
+import { useIsFocused } from "@react-navigation/native";
 
 const INITIAL_BOXES = [
   {
@@ -81,8 +82,6 @@ const INITIAL_BOXES = [
   },
 ];
 
-let currentId = 3;
-
 const boxesReducer = (boxes, action) => {
   if (action.type === "filtered") {
     if (action.value.length === 0) {
@@ -91,7 +90,7 @@ const boxesReducer = (boxes, action) => {
         filtered: ["None"],
       };
     }
-    console.log(boxes);
+    console.log(action.value);
     return {
       ...boxes,
       filtered: boxes.newBoxes.filter((box) => {
@@ -106,8 +105,6 @@ const boxesReducer = (boxes, action) => {
       }),
     };
   } else if (action.type === "getBoxes") {
-    console.log("here!!!");
-    console.log(action.value);
     const newBoxes = action.value;
     return { newBoxes, filtered: ["None"] };
   } else {
@@ -122,15 +119,17 @@ export default function Home() {
     INITIAL_BOXES,
     filtered: null,
   });
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     const fetchData = async () => {
       const response = await Supabase.from("selfCareBoxes").select("*");
-
       dispatch({ type: "getBoxes", value: response.data });
     };
-    fetchData();
-  }, []);
+    if (isFocused) {
+      fetchData();
+    }
+  }, [isFocused]);
   useEffect(() => {
     const handleFilterBoxes = () => {
       dispatch({

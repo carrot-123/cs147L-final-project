@@ -6,7 +6,7 @@ import { Images, Themes } from "../../assets/Themes";
 import { Link } from "expo-router";
 import { AntDesign } from "@expo/vector-icons";
 export default function SelfCareBox({
-  index,
+  id,
   name,
   time,
   desc,
@@ -21,7 +21,7 @@ export default function SelfCareBox({
         href={{
           pathname: "/DetailScreen",
           params: {
-            index: index,
+            id: id,
             name: name,
             time: time,
             desc: desc,

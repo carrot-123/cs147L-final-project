@@ -34,7 +34,7 @@ export default function DetailScreen() {
               href={{
                 pathname: "/EditBox",
                 params: {
-                  index: params.index,
+                  id: params.id,
                   name: params.name,
                   time: params.time,
                   desc: params.desc,

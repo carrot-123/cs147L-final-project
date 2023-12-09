@@ -24,6 +24,8 @@ import {
   Menu,
   PaperProvider,
   RadioButton,
+  Dialog,
+  Portal,
 } from "react-native-paper";
 import { Picker } from "@react-native-picker/picker";
 import { Images, Themes } from "../assets/Themes/index.js";
@@ -52,6 +54,9 @@ export default function NewBox() {
     pickerRef.current.blur();
   }
 
+  const showDialog = () => setVisible(true);
+
+  const hideDialog = () => setVisible(false);
   return (
     <>
       <Stack.Screen
@@ -70,109 +75,131 @@ export default function NewBox() {
           ),
         }}
       />
-      <SafeAreaView style={styles.container}>
-        <KeyboardAwareScrollView
-          contentContainerStyle={{ paddingBottom: 60 }}
-          extraScrollHeight={50}
-        >
-          <View style={styles.imgHeader}></View>
-          <View style={styles.infoContainer}>
-            <TextInput
-              style={styles.body}
-              mode="flat"
-              label={<Text style={styles.label}>Name</Text>}
-              multiline={true}
-              onChangeText={(text) => setText(text)}
-              value={text}
-              placeholder="The name of your self care box"
-            />
-            <View style={styles.radioButtonSection}>
-              <Text style={[styles.label, { fontSize: 15 }]}>Time</Text>
-              <RadioButton.Group
-                onValueChange={(newValue) => setValue(newValue)}
-                value={value}
-              >
-                <View style={styles.radioButtons}>
-                  <Text style={styles.radioButtonText}>Morning</Text>
-                  <RadioButton value="Morning" />
-                </View>
-                <View style={styles.radioButtons}>
-                  <Text style={styles.radioButtonText}>Day</Text>
-                  <RadioButton value="Day" />
-                </View>
-                <View style={styles.radioButtons}>
-                  <Text style={styles.radioButtonText}>Night</Text>
-                  <RadioButton value="Night" />
-                </View>
-                <View style={styles.radioButtons}>
-                  <Text style={styles.radioButtonText}>Anytime</Text>
-                  <RadioButton value="Anytime" />
-                </View>
-              </RadioButton.Group>
-            </View>
+      <PaperProvider>
+        <SafeAreaView style={styles.container}>
+          <KeyboardAwareScrollView
+            contentContainerStyle={{ paddingBottom: 60 }}
+            extraScrollHeight={50}
+          >
+            <View style={styles.imgHeader}></View>
+            <View style={styles.infoContainer}>
+              <TextInput
+                style={styles.body}
+                mode="flat"
+                label={<Text style={styles.label}>Name</Text>}
+                multiline={true}
+                onChangeText={(text) => setText(text)}
+                value={text}
+                placeholder="The name of your self care box"
+              />
+              <View style={styles.radioButtonSection}>
+                <Text style={[styles.label, { fontSize: 15 }]}>Time</Text>
+                <RadioButton.Group
+                  onValueChange={(newValue) => setValue(newValue)}
+                  value={value}
+                >
+                  <View style={styles.radioButtons}>
+                    <Text style={styles.radioButtonText}>Morning</Text>
+                    <RadioButton value="Morning" />
+                  </View>
+                  <View style={styles.radioButtons}>
+                    <Text style={styles.radioButtonText}>Day</Text>
+                    <RadioButton value="Day" />
+                  </View>
+                  <View style={styles.radioButtons}>
+                    <Text style={styles.radioButtonText}>Night</Text>
+                    <RadioButton value="Night" />
+                  </View>
+                  <View style={styles.radioButtons}>
+                    <Text style={styles.radioButtonText}>Anytime</Text>
+                    <RadioButton value="Anytime" />
+                  </View>
+                </RadioButton.Group>
+              </View>
 
-            <TextInput
-              style={styles.body}
+              <TextInput
+                style={styles.body}
+                mode="flat"
+                label={<Text style={styles.label}>Description</Text>}
+                multiline={true}
+                onChangeText={(text) => setText(text)}
+                value={text}
+                placeholder={"A quick description of this self care box"}
+              />
+              <TextInput
+                style={styles.body}
+                mode="flat"
+                label={<Text style={styles.label}>Self Care Routine</Text>}
+                multiline={true}
+                onChangeText={(text) => setText(text)}
+                value={text}
+                placeholder={
+                  "A list of some self care activities\nPut each item on its own line"
+                }
+              />
+              <TextInput
+                style={styles.body}
+                mode="flat"
+                label={<Text style={styles.label}>Items Neeeded</Text>}
+                multiline={true}
+                onChangeText={(text) => setText(text)}
+                value={text}
+                placeholder={
+                  "A list of items for self care\nPut each item on its own line"
+                }
+              />
+              <TextInput
+                style={styles.body}
+                mode="flat"
+                label={<Text style={styles.label}>Recommended Playlists</Text>}
+                multiline={true}
+                onChangeText={(text) => setText(text)}
+                value={text}
+                placeholder={
+                  "Some playlists to watch or listen to\nPut each item on its own line"
+                }
+              />
+              <TextInput
+                style={styles.body}
+                mode="flat"
+                label={<Text style={styles.label}>Words of Affirmation</Text>}
+                multiline={true}
+                value={params.words}
+                placeholder="Some affirming words or quotes"
+              />
+            </View>
+            <FAB
+              label="Set cover"
+              style={styles.fab}
               mode="flat"
-              label={<Text style={styles.label}>Description</Text>}
-              multiline={true}
-              onChangeText={(text) => setText(text)}
-              value={text}
-              placeholder={"A quick description of this self care box"}
+              onPress={() => console.log("Pressed")}
+              color="white"
+              backgroundColor="rgba(0, 0, 0, 0.8)"
+              customSize={25}
             />
-            <TextInput
-              style={styles.body}
-              mode="flat"
-              label={<Text style={styles.label}>Self Care Routine</Text>}
-              multiline={true}
-              onChangeText={(text) => setText(text)}
-              value={text}
-              placeholder={
-                "A list of some self care activities\nPut each item on its own line"
-              }
-            />
-            <TextInput
-              style={styles.body}
-              mode="flat"
-              label={<Text style={styles.label}>Items Neeeded</Text>}
-              multiline={true}
-              onChangeText={(text) => setText(text)}
-              value={text}
-              placeholder={
-                "A list of items for self care\nPut each item on its own line"
-              }
-            />
-            <TextInput
-              style={styles.body}
-              mode="flat"
-              label={<Text style={styles.label}>Recommended Playlists</Text>}
-              multiline={true}
-              onChangeText={(text) => setText(text)}
-              value={text}
-              placeholder={
-                "Some playlists to watch or listen to\nPut each item on its own line"
-              }
-            />
-            <TextInput
-              style={styles.body}
-              mode="flat"
-              label={<Text style={styles.label}>Words of Affirmation</Text>}
-              multiline={true}
-              value={params.words}
-              placeholder="Some affirming words or quotes"
-            />
-          </View>
-          <FAB
-            label="Set cover"
-            style={styles.fab}
-            mode="flat"
-            onPress={() => console.log("Pressed")}
-            color="white"
-            backgroundColor="rgba(0, 0, 0, 0.8)"
-            customSize={25}
-          />
-        </KeyboardAwareScrollView>
-      </SafeAreaView>
+            <Portal>
+              <Dialog
+                visible={visible}
+                onDismiss={hideDialog}
+                style={styles.dialog}
+              >
+                <Dialog.Title style={styles.label}>
+                  Leave without Saving?
+                </Dialog.Title>
+
+                <Dialog.Actions>
+                  <Pressable onPress={hideDialog}>
+                    <Text>Cancel</Text>
+                  </Pressable>
+                  <Pressable onPress={hideDialog}>
+                    <Text style={{ color: "red" }}>Leave</Text>
+                  </Pressable>
+                </Dialog.Actions>
+              </Dialog>
+            </Portal>
+          </KeyboardAwareScrollView>
+        </SafeAreaView>
+      </PaperProvider>
     </>
   );
 }
@@ -244,5 +271,9 @@ const styles = StyleSheet.create({
   },
   buttonLabelText: {
     fontSize: 12,
+  },
+  dialog: {
+    backgroundColor: "white",
+    borderRadius: 6,
   },
 });

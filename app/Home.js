@@ -21,66 +21,7 @@ import { Link } from "expo-router";
 import Supabase from "./Supabase.js";
 import { useIsFocused } from "@react-navigation/native";
 
-const INITIAL_BOXES = [
-  {
-    id: 0,
-    name: "Test for very very very very very very very long titles!",
-    time: "Day",
-    desc: "Test for very very very very very very very very very very very very very very very very long descriptions",
-    imageUrl: "",
-    starred: false,
-
-    routine: [
-      "Drink tea",
-      "Light a candle",
-      "Call mom",
-      "Listen to lofi",
-      "Watch videos",
-    ],
-
-    itemsNeeded: ["Chamomile tea", "Vanilla candle", "Blankets"],
-    playlists: ["Lofi for Bears Only"],
-    words: "Everything is Fine",
-  },
-  {
-    id: 1,
-    name: "For a Good Night's Sleep",
-    time: "Night",
-    desc: "I want to sleep ;-;",
-    imageUrl: "",
-    starred: true,
-    routine: [
-      "Drink tea",
-      "Light a candle",
-      "Call mom",
-      "Listen to lofi",
-      "Watch videos",
-    ],
-
-    itemsNeeded: ["Chamomile tea", "Vanilla candle", "Blankets"],
-    playlists: ["Lofi for Bears Only"],
-    words: ["Everything is Fine"],
-  },
-  {
-    id: 2,
-    name: "For when I am sad",
-    time: "Anytime",
-    desc: "I will provide better descriptions",
-    imageUrl: "",
-    starred: false,
-    routine: [
-      "Drink tea",
-      "Light a candle",
-      "Call mom",
-      "Listen to lofi",
-      "Watch videos",
-    ],
-
-    itemsNeeded: ["Chamomile tea", "Vanilla candle", "Blankets"],
-    playlists: ["Lofi for Bears Only"],
-    words: ["Everything is Fine"],
-  },
-];
+const INITIAL_BOXES = [];
 
 const boxesReducer = (boxes, action) => {
   if (action.type === "filtered") {
@@ -90,7 +31,7 @@ const boxesReducer = (boxes, action) => {
         filtered: ["None"],
       };
     }
-    console.log(action.value);
+
     return {
       ...boxes,
       filtered: boxes.newBoxes.filter((box) => {
@@ -130,6 +71,7 @@ export default function Home() {
       fetchData();
     }
   }, [isFocused]);
+
   useEffect(() => {
     const handleFilterBoxes = () => {
       dispatch({

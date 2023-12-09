@@ -1,46 +1,26 @@
 import { useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import {
-  StyleSheet,
-  Text,
-  View,
-  SafeAreaView,
-  ScrollView,
-  Pressable,
-  FlatList,
-  AsyncStorage,
-  Button,
-  KeyboardAvoidingView,
-} from "react-native";
-import { useCallback, useReducer, useState, useRef, useEffect } from "react";
+import { StyleSheet, Text, View, SafeAreaView, Pressable } from "react-native";
+import { useState, useRef } from "react";
 
 import {
-  SegmentedButtons,
-  Icon,
-  useTheme,
   FAB,
   TextInput,
-  Menu,
   PaperProvider,
   RadioButton,
   Dialog,
   Portal,
+  HelperText,
 } from "react-native-paper";
-import { Picker } from "@react-native-picker/picker";
-import { Images, Themes } from "../assets/Themes/index.js";
-import { useFonts } from "expo-font";
-import SelfCareBox from "./components/SelfCareBox.js";
-import BoxList from "./components/BoxList.js";
-import BoxesContext from "./BoxesContext.js";
-import DetailList from "./components/DetailList.js";
 import { AntDesign } from "@expo/vector-icons";
 import { Stack } from "expo-router";
-import { Link } from "expo-router";
+import { useRouter } from "expo-router";
 import Supabase from "./Supabase.js";
 
 export default function EditBox() {
   const params = useLocalSearchParams();
+  const router = useRouter();
 
   const [nameText, setNameText] = useState(undefined);
   const [timeText, setTimeText] = useState(undefined);
@@ -49,13 +29,36 @@ export default function EditBox() {
   const [itemsText, setItemsText] = useState(undefined);
   const [playlistsText, setPlaylistsText] = useState(undefined);
   const [wordsText, setWordsText] = useState(undefined);
-  const [save, setSave] = useState(false);
 
   const [visible, setVisible] = useState(false);
-
   const showDialog = () => setVisible(true);
-
   const hideDialog = () => setVisible(false);
+
+  const hasErrors = (text) => {
+    return text === "";
+  };
+
+  const disableSave = () => {
+    if (
+      hasErrors(nameText) ||
+      hasErrors(descText) ||
+      hasErrors(routineText) ||
+      hasErrors(itemsText) ||
+      hasErrors(playlistsText) ||
+      hasErrors(wordsText)
+    ) {
+      return true;
+    }
+    return false;
+  };
+
+  const deleteBox = async () => {
+    const { error } = await Supabase.from("selfCareBoxes")
+      .delete()
+      .eq("id", params.id);
+
+    router.push("/Home");
+  };
 
   const pickerRef = useRef();
   const update = async () => {
@@ -94,6 +97,20 @@ export default function EditBox() {
         .update({ words: wordsText })
         .eq("id", params.id);
     }
+    router.setParams();
+    router.push({
+      pathname: "/DetailScreen",
+      params: {
+        id: params.id,
+        name: nameText ? nameText : params.name,
+        time: timeText ? timeText : params.time,
+        desc: descText ? descText : params.desc,
+        routine: routineText ? routineText.split("\n") : params.routine,
+        itemsNeeded: itemsText ? itemsText.split("\n") : params.itemsNeeded,
+        playlists: playlistsText ? playlistsText.split("\n") : params.playlists,
+        words: wordsText ? wordsText : params.words,
+      },
+    });
   };
 
   return (
@@ -101,37 +118,15 @@ export default function EditBox() {
       <Stack.Screen
         options={{
           headerRight: () => (
-            <Link
-              href={{
-                pathname: "/DetailScreen",
-                params: {
-                  id: params.id,
-                  name: nameText ? nameText : params.name,
-                  time: timeText ? timeText : params.time,
-                  desc: descText ? descText : params.desc,
-                  routine: routineText
-                    ? routineText.split("\n")
-                    : params.routine,
-                  itemsNeeded: itemsText
-                    ? itemsText.split("\n")
-                    : params.itemsNeeded,
-                  playlists: playlistsText
-                    ? playlistsText.split("\n")
-                    : params.playlists,
-                  words: wordsText ? wordsText : params.words,
-                },
+            <Pressable
+              disabled={disableSave()}
+              onPress={() => {
+                update();
               }}
-              asChild
+              style={{ opacity: disableSave() ? 0.25 : 1 }}
             >
-              <Pressable
-                onPress={() => {
-                  update();
-                  setSave(true);
-                }}
-              >
-                <Text>Save</Text>
-              </Pressable>
-            </Link>
+              <Text>Save</Text>
+            </Pressable>
           ),
         }}
       />
@@ -143,15 +138,21 @@ export default function EditBox() {
           >
             <View style={styles.imgHeader}></View>
             <View style={styles.infoContainer}>
-              <TextInput
-                style={styles.body}
-                mode="flat"
-                label={<Text style={styles.label}>Name</Text>}
-                multiline={true}
-                defaultValue={params.name}
-                onChangeText={(text) => setNameText(text)}
-                value={nameText}
-              />
+              <View style={{ width: "100%" }}>
+                <TextInput
+                  style={styles.body}
+                  mode="flat"
+                  label={<Text style={styles.label}>Name</Text>}
+                  multiline={true}
+                  defaultValue={params.name}
+                  onChangeText={(text) => setNameText(text)}
+                  value={nameText}
+                />
+                <HelperText type="error" visible={hasErrors(nameText)}>
+                  Please provide a name
+                </HelperText>
+              </View>
+
               <View style={styles.radioButtonSection}>
                 <Text style={[styles.label, { fontSize: 15 }]}>Time</Text>
                 <RadioButton.Group
@@ -177,56 +178,80 @@ export default function EditBox() {
                   </View>
                 </RadioButton.Group>
               </View>
-
-              <TextInput
-                style={styles.body}
-                mode="flat"
-                label={<Text style={styles.label}>Description</Text>}
-                multiline={true}
-                onChangeText={(text) => setDescText(text)}
-                defaultValue={params.desc}
-                value={descText}
-              />
-              <TextInput
-                style={styles.body}
-                mode="flat"
-                label={<Text style={styles.label}>Self Care Routine</Text>}
-                multiline={true}
-                onChangeText={(text) => setRoutineText(text)}
-                defaultValue={params.routine.replaceAll(",", "\n")}
-                value={routineText}
-              />
-              <TextInput
-                style={styles.body}
-                mode="flat"
-                label={<Text style={styles.label}>Items Neeeded</Text>}
-                multiline={true}
-                onChangeText={(text) => setItemsText(text)}
-                defaultValue={params.itemsNeeded.replaceAll(",", "\n")}
-                value={itemsText}
-              />
-              <TextInput
-                style={styles.body}
-                mode="flat"
-                label={<Text style={styles.label}>Recommended Playlists</Text>}
-                multiline={true}
-                onChangeText={(text) => setPlaylistsText(text)}
-                defaultValue={params.playlists.replaceAll(",", "\n")}
-                value={playlistsText}
-              />
-              <TextInput
-                style={styles.body}
-                mode="flat"
-                label={<Text style={styles.label}>Words of Affirmation</Text>}
-                multiline={true}
-                onChangeText={(text) => setWordsText(text)}
-                defaultValue={params.words}
-                value={wordsText}
-              />
+              <View style={{ width: "100%" }}>
+                <TextInput
+                  style={styles.body}
+                  mode="flat"
+                  label={<Text style={styles.label}>Description</Text>}
+                  multiline={true}
+                  onChangeText={(text) => setDescText(text)}
+                  defaultValue={params.desc}
+                  value={descText}
+                />
+                <HelperText type="error" visible={hasErrors(descText)}>
+                  Please provide a description
+                </HelperText>
+              </View>
+              <View style={{ width: "100%" }}>
+                <TextInput
+                  style={styles.body}
+                  mode="flat"
+                  label={<Text style={styles.label}>Self Care Routine</Text>}
+                  multiline={true}
+                  onChangeText={(text) => setRoutineText(text)}
+                  defaultValue={params.routine.replaceAll(",", "\n")}
+                  value={routineText}
+                />
+                <HelperText type="error" visible={hasErrors(routineText)}>
+                  Please provide a routine
+                </HelperText>
+              </View>
+              <View style={{ width: "100%" }}>
+                <TextInput
+                  style={styles.body}
+                  mode="flat"
+                  label={<Text style={styles.label}>Items Neeeded</Text>}
+                  multiline={true}
+                  onChangeText={(text) => setItemsText(text)}
+                  defaultValue={params.itemsNeeded.replaceAll(",", "\n")}
+                  value={itemsText}
+                />
+                <HelperText type="error" visible={hasErrors(itemsText)}>
+                  Please provide a list of items
+                </HelperText>
+              </View>
+              <View style={{ width: "100%" }}>
+                <TextInput
+                  style={styles.body}
+                  mode="flat"
+                  label={
+                    <Text style={styles.label}>Recommended Playlists</Text>
+                  }
+                  multiline={true}
+                  onChangeText={(text) => setPlaylistsText(text)}
+                  defaultValue={params.playlists.replaceAll(",", "\n")}
+                  value={playlistsText}
+                />
+                <HelperText type="error" visible={hasErrors(playlistsText)}>
+                  Please provide a playlist
+                </HelperText>
+              </View>
+              <View style={{ width: "100%" }}>
+                <TextInput
+                  style={styles.body}
+                  mode="flat"
+                  label={<Text style={styles.label}>Words of Affirmation</Text>}
+                  multiline={true}
+                  onChangeText={(text) => setWordsText(text)}
+                  defaultValue={params.words}
+                  value={wordsText}
+                />
+                <HelperText type="error" visible={hasErrors(wordsText)}>
+                  Please provide some words of affirmation
+                </HelperText>
+              </View>
               <Pressable onPress={showDialog} style={styles.deleteButton}>
-                <Text style={{ fontFamily: "Montserrat", color: "red" }}>
-                  Delete Box
-                </Text>
+                <Text style={styles.deleteFont}>Delete Box</Text>
               </Pressable>
             </View>
             <FAB
@@ -240,15 +265,22 @@ export default function EditBox() {
             />
 
             <Portal>
-              <Dialog visible={visible} onDismiss={hideDialog}>
-                <Dialog.Title>Delete this box?</Dialog.Title>
+              <Dialog
+                visible={visible}
+                onDismiss={hideDialog}
+                style={styles.dialog}
+              >
+                <Dialog.Title style={styles.label}>
+                  Delete this box?
+                </Dialog.Title>
 
                 <Dialog.Actions>
                   <Pressable onPress={hideDialog}>
                     <Text>Cancel</Text>
                   </Pressable>
-                  <Pressable onPress={hideDialog}>
-                    <Text>Delete</Text>
+
+                  <Pressable onPress={deleteBox}>
+                    <Text style={{ color: "red" }}>Delete</Text>
                   </Pressable>
                 </Dialog.Actions>
               </Dialog>
@@ -331,5 +363,13 @@ const styles = StyleSheet.create({
   },
   buttonLabelText: {
     fontSize: 12,
+  },
+  dialog: {
+    backgroundColor: "white",
+    borderRadius: 6,
+  },
+  deleteFont: {
+    color: "red",
+    fontFamily: "Montserrat",
   },
 });

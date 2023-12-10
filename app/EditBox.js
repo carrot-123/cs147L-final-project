@@ -2,7 +2,7 @@ import { useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { StyleSheet, Text, View, SafeAreaView, Pressable } from "react-native";
-import { useState, useRef } from "react";
+import { useState } from "react";
 
 import {
   FAB,
@@ -60,7 +60,6 @@ export default function EditBox() {
     router.push("/Home");
   };
 
-  const pickerRef = useRef();
   const update = async () => {
     if (nameText) {
       const { error } = await Supabase.from("selfCareBoxes")
@@ -97,7 +96,6 @@ export default function EditBox() {
         .update({ words: wordsText })
         .eq("id", params.id);
     }
-    router.setParams();
     router.push({
       pathname: "/DetailScreen",
       params: {
@@ -138,7 +136,7 @@ export default function EditBox() {
           >
             <View style={styles.imgHeader}></View>
             <View style={styles.infoContainer}>
-              <View style={{ width: "100%" }}>
+              <View style={{ width: "90%" }}>
                 <TextInput
                   style={styles.body}
                   mode="flat"
@@ -156,7 +154,7 @@ export default function EditBox() {
               <View style={styles.radioButtonSection}>
                 <Text style={[styles.label, { fontSize: 15 }]}>Time</Text>
                 <RadioButton.Group
-                  onValueChange={(timeText) => setTimeText(timeText)}
+                  onValueChange={(text) => setTimeText(text)}
                   value={timeText}
                   defaultValue={params.time}
                 >
@@ -178,7 +176,7 @@ export default function EditBox() {
                   </View>
                 </RadioButton.Group>
               </View>
-              <View style={{ width: "100%" }}>
+              <View style={{ width: "90%" }}>
                 <TextInput
                   style={styles.body}
                   mode="flat"
@@ -192,7 +190,7 @@ export default function EditBox() {
                   Please provide a description
                 </HelperText>
               </View>
-              <View style={{ width: "100%" }}>
+              <View style={{ width: "90%" }}>
                 <TextInput
                   style={styles.body}
                   mode="flat"
@@ -206,7 +204,7 @@ export default function EditBox() {
                   Please provide a routine
                 </HelperText>
               </View>
-              <View style={{ width: "100%" }}>
+              <View style={{ width: "90%" }}>
                 <TextInput
                   style={styles.body}
                   mode="flat"
@@ -220,7 +218,7 @@ export default function EditBox() {
                   Please provide a list of items
                 </HelperText>
               </View>
-              <View style={{ width: "100%" }}>
+              <View style={{ width: "90%" }}>
                 <TextInput
                   style={styles.body}
                   mode="flat"
@@ -236,7 +234,7 @@ export default function EditBox() {
                   Please provide a playlist
                 </HelperText>
               </View>
-              <View style={{ width: "100%" }}>
+              <View style={{ width: "90%" }}>
                 <TextInput
                   style={styles.body}
                   mode="flat"
@@ -247,7 +245,7 @@ export default function EditBox() {
                   value={wordsText}
                 />
                 <HelperText type="error" visible={hasErrors(wordsText)}>
-                  Please provide some words of affirmation
+                  Please provide some affirming words
                 </HelperText>
               </View>
               <Pressable onPress={showDialog} style={styles.deleteButton}>
@@ -258,7 +256,7 @@ export default function EditBox() {
               label="Change cover"
               style={styles.fab}
               mode="flat"
-              onPress={showDialog}
+              onPress={showDialog} // change this!
               color="white"
               backgroundColor="rgba(0, 0, 0, 0.8)"
               customSize={25}

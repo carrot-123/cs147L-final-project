@@ -12,9 +12,10 @@ import {
   AsyncStorage,
   Button,
   KeyboardAvoidingView,
+  Alert,
 } from "react-native";
 import { useCallback, useReducer, useState, useRef, useEffect } from "react";
-
+import Supabase from "./Supabase.js";
 import {
   SegmentedButtons,
   Icon,
@@ -26,6 +27,7 @@ import {
   RadioButton,
   Dialog,
   Portal,
+  HelperText,
 } from "react-native-paper";
 import { Picker } from "@react-native-picker/picker";
 import { Images, Themes } from "../assets/Themes/index.js";
@@ -36,42 +38,84 @@ import BoxesContext from "./BoxesContext.js";
 import DetailList from "./components/DetailList.js";
 import { AntDesign } from "@expo/vector-icons";
 import { Stack } from "expo-router";
-import { Link } from "expo-router";
+import { useRouter, Link } from "expo-router";
 
 export default function NewBox() {
   const params = useLocalSearchParams();
+  const router = useRouter();
+
+  const [nameText, setNameText] = useState(undefined);
+  const [timeText, setTimeText] = useState(undefined);
+  const [descText, setDescText] = useState(undefined);
+  const [routineText, setRoutineText] = useState(undefined);
+  const [itemsText, setItemsText] = useState(undefined);
+  const [playlistsText, setPlaylistsText] = useState(undefined);
+  const [wordsText, setWordsText] = useState(undefined);
+
   const [visible, setVisible] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState();
-  const [value, setValue] = useState("first");
-  const [text, setText] = useState(undefined);
-  const pickerRef = useRef();
-
-  function open() {
-    pickerRef.current.focus();
-  }
-
-  function close() {
-    pickerRef.current.blur();
-  }
-
   const showDialog = () => setVisible(true);
-
   const hideDialog = () => setVisible(false);
+
+  const hasErrors = (text) => {
+    return text === "";
+  };
+
+  const disableSave = () => {
+    if (
+      nameText === undefined ||
+      descText === undefined ||
+      routineText === undefined ||
+      itemsText === undefined ||
+      playlistsText === undefined ||
+      wordsText === undefined ||
+      hasErrors(nameText) ||
+      hasErrors(descText) ||
+      hasErrors(routineText) ||
+      hasErrors(itemsText) ||
+      hasErrors(playlistsText) ||
+      hasErrors(wordsText)
+    ) {
+      return true;
+    }
+    return false;
+  };
+
+  const add = async () => {
+    const { error } = await Supabase.from("selfCareBoxes").insert({
+      name: nameText,
+      desc: descText,
+      time: timeText,
+      routine: routineText.split("\n"),
+      itemsNeeded: itemsText.split("\n"),
+      playlists: playlistsText.split("\n"),
+      words: wordsText,
+    });
+    router.push("/Home");
+  };
+
   return (
     <>
       <Stack.Screen
         options={{
           headerRight: () => (
-            <Link
-              href={{
-                pathname: "/Home",
+            <Pressable
+              disabled={disableSave()}
+              onPress={() => {
+                add();
               }}
-              asChild
+              style={{ opacity: disableSave() ? 0.25 : 1 }}
             >
-              <Pressable>
-                <Text>Save</Text>
-              </Pressable>
-            </Link>
+              <Text>Save</Text>
+            </Pressable>
+          ),
+          headerLeft: () => (
+            <Pressable
+              onPress={() => {
+                showDialog();
+              }}
+            >
+              <Text style={{ color: "red" }}>Cancel</Text>
+            </Pressable>
           ),
         }}
       />
@@ -83,20 +127,27 @@ export default function NewBox() {
           >
             <View style={styles.imgHeader}></View>
             <View style={styles.infoContainer}>
-              <TextInput
-                style={styles.body}
-                mode="flat"
-                label={<Text style={styles.label}>Name</Text>}
-                multiline={true}
-                onChangeText={(text) => setText(text)}
-                value={text}
-                placeholder="The name of your self care box"
-              />
+              <View style={{ width: "90%" }}>
+                <TextInput
+                  style={styles.body}
+                  mode="flat"
+                  label={<Text style={styles.label}>Name</Text>}
+                  multiline={true}
+                  onChangeText={(text) => setNameText(text)}
+                  value={nameText}
+                  placeholder="The name of your self care box"
+                />
+                <HelperText type="error" visible={hasErrors(nameText)}>
+                  Please provide a name
+                </HelperText>
+              </View>
+
               <View style={styles.radioButtonSection}>
                 <Text style={[styles.label, { fontSize: 15 }]}>Time</Text>
                 <RadioButton.Group
-                  onValueChange={(newValue) => setValue(newValue)}
-                  value={value}
+                  onValueChange={(text) => setTimeText(text)}
+                  value={timeText}
+                  defaultValue={"Anytime"}
                 >
                   <View style={styles.radioButtons}>
                     <Text style={styles.radioButtonText}>Morning</Text>
@@ -116,57 +167,84 @@ export default function NewBox() {
                   </View>
                 </RadioButton.Group>
               </View>
-
-              <TextInput
-                style={styles.body}
-                mode="flat"
-                label={<Text style={styles.label}>Description</Text>}
-                multiline={true}
-                onChangeText={(text) => setText(text)}
-                value={text}
-                placeholder={"A quick description of this self care box"}
-              />
-              <TextInput
-                style={styles.body}
-                mode="flat"
-                label={<Text style={styles.label}>Self Care Routine</Text>}
-                multiline={true}
-                onChangeText={(text) => setText(text)}
-                value={text}
-                placeholder={
-                  "A list of some self care activities\nPut each item on its own line"
-                }
-              />
-              <TextInput
-                style={styles.body}
-                mode="flat"
-                label={<Text style={styles.label}>Items Neeeded</Text>}
-                multiline={true}
-                onChangeText={(text) => setText(text)}
-                value={text}
-                placeholder={
-                  "A list of items for self care\nPut each item on its own line"
-                }
-              />
-              <TextInput
-                style={styles.body}
-                mode="flat"
-                label={<Text style={styles.label}>Recommended Playlists</Text>}
-                multiline={true}
-                onChangeText={(text) => setText(text)}
-                value={text}
-                placeholder={
-                  "Some playlists to watch or listen to\nPut each item on its own line"
-                }
-              />
-              <TextInput
-                style={styles.body}
-                mode="flat"
-                label={<Text style={styles.label}>Words of Affirmation</Text>}
-                multiline={true}
-                value={params.words}
-                placeholder="Some affirming words or quotes"
-              />
+              <View style={{ width: "90%" }}>
+                <TextInput
+                  style={styles.body}
+                  mode="flat"
+                  label={<Text style={styles.label}>Description</Text>}
+                  multiline={true}
+                  onChangeText={(text) => setDescText(text)}
+                  value={descText}
+                  placeholder={"A quick description of this self care box"}
+                />
+                <HelperText type="error" visible={hasErrors(descText)}>
+                  Please provide a description
+                </HelperText>
+              </View>
+              <View style={{ width: "90%" }}>
+                <TextInput
+                  style={styles.body}
+                  mode="flat"
+                  label={<Text style={styles.label}>Self Care Routine</Text>}
+                  multiline={true}
+                  onChangeText={(text) => setRoutineText(text)}
+                  value={routineText}
+                  placeholder={
+                    "A list of some self care activities\nPut each item on its own line"
+                  }
+                />
+                <HelperText type="error" visible={hasErrors(routineText)}>
+                  Please provide a routine
+                </HelperText>
+              </View>
+              <View style={{ width: "100%" }}>
+                <TextInput
+                  style={styles.body}
+                  mode="flat"
+                  label={<Text style={styles.label}>Items Neeeded</Text>}
+                  multiline={true}
+                  onChangeText={(text) => setItemsText(text)}
+                  value={itemsText}
+                  placeholder={
+                    "A list of items for self care\nPut each item on its own line"
+                  }
+                />
+                <HelperText type="error" visible={hasErrors(itemsText)}>
+                  Please provide a list of items
+                </HelperText>
+              </View>
+              <View style={{ width: "90%" }}>
+                <TextInput
+                  style={styles.body}
+                  mode="flat"
+                  label={
+                    <Text style={styles.label}>Recommended Playlists</Text>
+                  }
+                  multiline={true}
+                  onChangeText={(text) => setPlaylistsText(text)}
+                  value={playlistsText}
+                  placeholder={
+                    "Some playlists to watch or listen to\nPut each item on its own line"
+                  }
+                />
+                <HelperText type="error" visible={hasErrors(playlistsText)}>
+                  Please provide a playlist
+                </HelperText>
+              </View>
+              <View style={{ width: "90%" }}>
+                <TextInput
+                  style={styles.body}
+                  mode="flat"
+                  label={<Text style={styles.label}>Words of Affirmation</Text>}
+                  multiline={true}
+                  onChangeText={(text) => setWordsText(text)}
+                  value={params.words}
+                  placeholder="Some affirming words or quotes"
+                />
+                <HelperText type="error" visible={hasErrors(wordsText)}>
+                  Please provide some affirming words
+                </HelperText>
+              </View>
             </View>
             <FAB
               label="Set cover"
@@ -191,9 +269,11 @@ export default function NewBox() {
                   <Pressable onPress={hideDialog}>
                     <Text>Cancel</Text>
                   </Pressable>
-                  <Pressable onPress={hideDialog}>
-                    <Text style={{ color: "red" }}>Leave</Text>
-                  </Pressable>
+                  <Link href={{ pathname: "/Home" }} asChild>
+                    <Pressable>
+                      <Text style={{ color: "red" }}>Leave</Text>
+                    </Pressable>
+                  </Link>
                 </Dialog.Actions>
               </Dialog>
             </Portal>

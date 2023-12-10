@@ -1,10 +1,18 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, Pressable } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Pressable,
+  Image,
+  ImageBackground,
+} from "react-native";
 import { useCallback, useState } from "react";
 import { Icon, useTheme } from "react-native-paper";
 import { Images, Themes } from "../../assets/Themes";
 import { Link } from "expo-router";
 import { AntDesign } from "@expo/vector-icons";
+import Supabase from "../Supabase";
 export default function SelfCareBox({
   id,
   name,
@@ -15,6 +23,9 @@ export default function SelfCareBox({
   playlists,
   words,
 }) {
+  const image = {
+    uri: Supabase.storage.from("coverImages").getPublicUrl("cover1.jpeg"),
+  };
   return (
     <View style={styles.item}>
       <Link
@@ -33,12 +44,13 @@ export default function SelfCareBox({
         }}
         asChild
       >
-        <Pressable style={styles.button}>
-          <Text>img placeholder</Text>
-        </Pressable>
+        <Pressable style={styles.button}></Pressable>
       </Link>
 
       <View style={styles.infoContainer}>
+        <ImageBackground source={image} style={{ height: 100, width: 300 }}>
+          <Text>img placeholder</Text>
+        </ImageBackground>
         <Text style={styles.name}>{name}</Text>
         <View
           style={{

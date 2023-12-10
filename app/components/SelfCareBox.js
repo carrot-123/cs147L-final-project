@@ -22,9 +22,11 @@ export default function SelfCareBox({
   itemsNeeded,
   playlists,
   words,
+  coverImg,
 }) {
+  const url = Supabase.storage.from("coverImages").getPublicUrl(coverImg);
   const image = {
-    uri: Supabase.storage.from("coverImages").getPublicUrl("cover1.jpeg"),
+    uri: url.data.publicUrl,
   };
   return (
     <View style={styles.item}>
@@ -40,17 +42,17 @@ export default function SelfCareBox({
             itemsNeeded: itemsNeeded,
             playlists: playlists,
             words: words,
+            coverImg: coverImg,
           },
         }}
         asChild
       >
-        <Pressable style={styles.button}></Pressable>
+        <Pressable style={styles.button}>
+          <Image source={image} style={styles.button} />
+        </Pressable>
       </Link>
 
       <View style={styles.infoContainer}>
-        <ImageBackground source={image} style={{ height: 100, width: 300 }}>
-          <Text>img placeholder</Text>
-        </ImageBackground>
         <Text style={styles.name}>{name}</Text>
         <View
           style={{

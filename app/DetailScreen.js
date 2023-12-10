@@ -9,6 +9,7 @@ import {
   FlatList,
   AsyncStorage,
   Button,
+  Image,
 } from "react-native";
 import { useCallback, useReducer, useState, useEffect } from "react";
 import { Link } from "expo-router";
@@ -21,10 +22,16 @@ import BoxesContext from "./BoxesContext.js";
 import DetailList from "./components/DetailList.js";
 import { AntDesign } from "@expo/vector-icons";
 import { Stack } from "expo-router";
+import Supabase from "./Supabase.js";
 
 export default function DetailScreen() {
   const params = useLocalSearchParams();
-
+  const url = Supabase.storage
+    .from("coverImages")
+    .getPublicUrl(params.coverImg);
+  const image = {
+    uri: url.data.publicUrl,
+  };
   return (
     <>
       <Stack.Screen
@@ -42,6 +49,7 @@ export default function DetailScreen() {
                   itemsNeeded: params.itemsNeeded,
                   playlists: params.playlists,
                   words: params.words,
+                  coverImg: params.coverImg,
                 },
               }}
               asChild
@@ -54,7 +62,8 @@ export default function DetailScreen() {
 
       <SafeAreaView style={styles.container}>
         <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
-          <View style={styles.imgHeader}></View>
+          <Image source={image} style={styles.imgHeader} />
+
           <View style={styles.infoContainer}>
             <View>
               <Text style={styles.headerText}>{params.name}</Text>

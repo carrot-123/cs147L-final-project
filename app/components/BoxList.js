@@ -15,6 +15,7 @@ export default function BoxList() {
       itemsNeeded={item.itemsNeeded}
       playlists={item.playlists}
       words={item.words}
+      coverImg={item.coverImg}
     />
   );
 

@@ -13,6 +13,7 @@ import {
   Button,
   KeyboardAvoidingView,
   Alert,
+  Image,
 } from "react-native";
 import { useCallback, useReducer, useState, useRef, useEffect } from "react";
 import Supabase from "./Supabase.js";
@@ -44,6 +45,24 @@ export default function NewBox() {
   const params = useLocalSearchParams();
   const router = useRouter();
 
+  const url1 = Supabase.storage.from("coverImages").getPublicUrl("cover1.jpeg");
+  const image1 = {
+    uri: url1.data.publicUrl,
+  };
+  const url2 = Supabase.storage.from("coverImages").getPublicUrl("cover2.jpeg");
+  const image2 = {
+    uri: url2.data.publicUrl,
+  };
+  const url3 = Supabase.storage.from("coverImages").getPublicUrl("cover3.jpeg");
+  const image3 = {
+    uri: url3.data.publicUrl,
+  };
+  const url4 = Supabase.storage.from("coverImages").getPublicUrl("cover4.jpeg");
+  const image4 = {
+    uri: url4.data.publicUrl,
+  };
+  const [chosenImage, setChosenImage] = useState(null);
+
   const [nameText, setNameText] = useState(undefined);
   const [timeText, setTimeText] = useState(undefined);
   const [descText, setDescText] = useState(undefined);
@@ -55,6 +74,31 @@ export default function NewBox() {
   const [visible, setVisible] = useState(false);
   const showDialog = () => setVisible(true);
   const hideDialog = () => setVisible(false);
+
+  const [coverVisible, setCoverVisible] = useState(false);
+  const showCoverDialog = () => setCoverVisible(true);
+  const hideCoverDialog = () => setCoverVisible(false);
+
+  const [url, setUrl] = useState(
+    Supabase.storage.from("coverImages").getPublicUrl(params.coverImg)
+  );
+  const [image, setImage] = useState({
+    uri: url.data.publicUrl,
+  });
+
+  useEffect(() => {
+    const setCover = async () => {
+      await Supabase.from("selfCareBoxes")
+        .update({ coverImg: chosenImage })
+        .eq("id", params.id);
+      setUrl(Supabase.storage.from("coverImages").getPublicUrl(chosenImage));
+    };
+    setCover();
+    hideCoverDialog();
+  }, [chosenImage]);
+  useEffect(() => {
+    setImage({ uri: url.data.publicUrl });
+  }, [url]);
 
   const hasErrors = (text) => {
     return text === "";
@@ -125,7 +169,7 @@ export default function NewBox() {
             contentContainerStyle={{ paddingBottom: 60 }}
             extraScrollHeight={50}
           >
-            <View style={styles.imgHeader}></View>
+            <Image source={image} style={styles.imgHeader} />
             <View style={styles.infoContainer}>
               <View style={{ width: "90%" }}>
                 <TextInput
@@ -250,7 +294,7 @@ export default function NewBox() {
               label="Set cover"
               style={styles.fab}
               mode="flat"
-              onPress={() => console.log("Pressed")}
+              onPress={showCoverDialog}
               color="white"
               backgroundColor="rgba(0, 0, 0, 0.8)"
               customSize={25}
@@ -274,6 +318,34 @@ export default function NewBox() {
                       <Text style={{ color: "red" }}>Leave</Text>
                     </Pressable>
                   </Link>
+                </Dialog.Actions>
+              </Dialog>
+            </Portal>
+            <Portal>
+              <Dialog
+                visible={coverVisible}
+                onDismiss={hideCoverDialog}
+                style={styles.dialog}
+              >
+                <Dialog.Title style={styles.label}>
+                  Choose a new cover image:
+                </Dialog.Title>
+
+                <Dialog.Actions>
+                  <ScrollView>
+                    <Pressable onPress={() => setChosenImage("cover1.jpeg")}>
+                      <Image source={image1} style={styles.button} />
+                    </Pressable>
+                    <Pressable onPress={() => setChosenImage("cover2.jpeg")}>
+                      <Image source={image2} style={styles.button} />
+                    </Pressable>
+                    <Pressable onPress={() => setChosenImage("cover3.jpeg")}>
+                      <Image source={image3} style={styles.button} />
+                    </Pressable>
+                    <Pressable onPress={() => setChosenImage("cover4.jpeg")}>
+                      <Image source={image4} style={styles.button} />
+                    </Pressable>
+                  </ScrollView>
                 </Dialog.Actions>
               </Dialog>
             </Portal>
@@ -354,6 +426,13 @@ const styles = StyleSheet.create({
   },
   dialog: {
     backgroundColor: "white",
+    borderRadius: 6,
+  },
+  button: {
+    marginTop: 20,
+    width: 300,
+    height: 100,
+    backgroundColor: "#CEDC9D",
     borderRadius: 6,
   },
 });

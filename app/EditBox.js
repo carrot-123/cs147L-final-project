@@ -1,8 +1,16 @@
 import { useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { StyleSheet, Text, View, SafeAreaView, Pressable } from "react-native";
-import { useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+  Pressable,
+  Image,
+  ScrollView,
+} from "react-native";
+import { useState, useEffect } from "react";
 
 import {
   FAB,
@@ -15,10 +23,30 @@ import {
 } from "react-native-paper";
 import { AntDesign } from "@expo/vector-icons";
 import { Stack } from "expo-router";
-import { useRouter } from "expo-router";
+import { useRouter, Link } from "expo-router";
 import Supabase from "./Supabase.js";
+import { useIsFocused } from "@react-navigation/native";
 
 export default function EditBox() {
+  const url1 = Supabase.storage.from("coverImages").getPublicUrl("cover1.jpeg");
+  const image1 = {
+    uri: url1.data.publicUrl,
+  };
+  const url2 = Supabase.storage.from("coverImages").getPublicUrl("cover2.jpeg");
+  const image2 = {
+    uri: url2.data.publicUrl,
+  };
+  const url3 = Supabase.storage.from("coverImages").getPublicUrl("cover3.jpeg");
+  const image3 = {
+    uri: url3.data.publicUrl,
+  };
+  const url4 = Supabase.storage.from("coverImages").getPublicUrl("cover4.jpeg");
+  const image4 = {
+    uri: url4.data.publicUrl,
+  };
+  const [chosenImage, setChosenImage] = useState(null);
+
+  const isFocused = useIsFocused();
   const params = useLocalSearchParams();
   const router = useRouter();
 
@@ -34,6 +62,30 @@ export default function EditBox() {
   const showDialog = () => setVisible(true);
   const hideDialog = () => setVisible(false);
 
+  const [coverVisible, setCoverVisible] = useState(false);
+  const showCoverDialog = () => setCoverVisible(true);
+  const hideCoverDialog = () => setCoverVisible(false);
+
+  const [url, setUrl] = useState(
+    Supabase.storage.from("coverImages").getPublicUrl(params.coverImg)
+  );
+  const [image, setImage] = useState({
+    uri: url.data.publicUrl,
+  });
+
+  useEffect(() => {
+    const setCover = async () => {
+      await Supabase.from("selfCareBoxes")
+        .update({ coverImg: chosenImage })
+        .eq("id", params.id);
+      setUrl(Supabase.storage.from("coverImages").getPublicUrl(chosenImage));
+    };
+    setCover();
+    hideCoverDialog();
+  }, [chosenImage]);
+  useEffect(() => {
+    setImage({ uri: url.data.publicUrl });
+  }, [url]);
   const hasErrors = (text) => {
     return text === "";
   };
@@ -107,6 +159,7 @@ export default function EditBox() {
         itemsNeeded: itemsText ? itemsText.split("\n") : params.itemsNeeded,
         playlists: playlistsText ? playlistsText.split("\n") : params.playlists,
         words: wordsText ? wordsText : params.words,
+        coverImg: params.coverImg, // change later
       },
     });
   };
@@ -134,7 +187,7 @@ export default function EditBox() {
             contentContainerStyle={{ paddingBottom: 60 }}
             extraScrollHeight={50}
           >
-            <View style={styles.imgHeader}></View>
+            <Image source={image} style={styles.imgHeader} />
             <View style={styles.infoContainer}>
               <View style={{ width: "90%" }}>
                 <TextInput
@@ -252,13 +305,14 @@ export default function EditBox() {
                 <Text style={styles.deleteFont}>Delete Box</Text>
               </Pressable>
             </View>
+
             <FAB
               label="Change cover"
               style={styles.fab}
               mode="flat"
-              onPress={showDialog} // change this!
+              onPress={showCoverDialog}
               color="white"
-              backgroundColor="rgba(0, 0, 0, 0.8)"
+              backgroundColor="rgba(0, 0, 0, 0.7)"
               customSize={25}
             />
 
@@ -283,6 +337,34 @@ export default function EditBox() {
                 </Dialog.Actions>
               </Dialog>
             </Portal>
+            <Portal>
+              <Dialog
+                visible={coverVisible}
+                onDismiss={hideCoverDialog}
+                style={styles.dialog}
+              >
+                <Dialog.Title style={styles.label}>
+                  Choose a new cover image:
+                </Dialog.Title>
+
+                <Dialog.Actions>
+                  <ScrollView>
+                    <Pressable onPress={() => setChosenImage("cover1.jpeg")}>
+                      <Image source={image1} style={styles.button} />
+                    </Pressable>
+                    <Pressable onPress={() => setChosenImage("cover2.jpeg")}>
+                      <Image source={image2} style={styles.button} />
+                    </Pressable>
+                    <Pressable onPress={() => setChosenImage("cover3.jpeg")}>
+                      <Image source={image3} style={styles.button} />
+                    </Pressable>
+                    <Pressable onPress={() => setChosenImage("cover4.jpeg")}>
+                      <Image source={image4} style={styles.button} />
+                    </Pressable>
+                  </ScrollView>
+                </Dialog.Actions>
+              </Dialog>
+            </Portal>
           </KeyboardAwareScrollView>
         </SafeAreaView>
       </PaperProvider>
@@ -293,7 +375,7 @@ export default function EditBox() {
 const styles = StyleSheet.create({
   imgHeader: {
     height: 131,
-    backgroundColor: "black",
+    backgroundColor: "#CEDC9D",
     width: "100%",
   },
   container: {
@@ -369,5 +451,12 @@ const styles = StyleSheet.create({
   deleteFont: {
     color: "red",
     fontFamily: "Montserrat",
+  },
+  button: {
+    marginTop: 20,
+    width: 300,
+    height: 100,
+    backgroundColor: "#CEDC9D",
+    borderRadius: 6,
   },
 });

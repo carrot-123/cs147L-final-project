@@ -1,4 +1,11 @@
-import { StyleSheet, Text, View, SafeAreaView, Pressable } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+  Pressable,
+  Platform,
+} from "react-native";
 import { useCallback, useReducer, useState, useEffect } from "react";
 import { SegmentedButtons } from "react-native-paper";
 import { useFonts } from "expo-font";
@@ -187,7 +194,7 @@ const styles = StyleSheet.create({
   addButton: {
     alignSelf: "flex-end",
     paddingRight: 20,
-    paddingTop: 5,
+    paddingTop: Platform.OS === "android" ? 40 : 5,
   },
   headerText: {
     fontFamily: "Montserrat-Bold",

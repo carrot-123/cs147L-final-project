@@ -121,6 +121,7 @@ export default function NewBox() {
       itemsNeeded: itemsText.split("\n"),
       playlists: playlistsText.split("\n"),
       words: wordsText,
+      coverImg: chosenImage,
     });
     router.push("/Home");
   };
@@ -132,9 +133,7 @@ export default function NewBox() {
           headerRight: () => (
             <Pressable
               disabled={disableSave()}
-              onPress={() => {
-                add();
-              }}
+              onPress={add}
               style={{ opacity: disableSave() ? 0.25 : 1 }}
             >
               <Text>Save</Text>

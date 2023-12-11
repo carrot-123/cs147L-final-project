@@ -87,6 +87,7 @@ export default function EditBox() {
   useEffect(() => {
     setImage({ uri: url.data.publicUrl });
   }, [url]);
+
   const hasErrors = (text) => {
     return text === "";
   };

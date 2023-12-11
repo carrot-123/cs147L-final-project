@@ -46,14 +46,6 @@ export default function Layout() {
           headerBackTitleVisible: false,
         })}
       />
-      <Stack.Screen
-        name="CoverImage"
-        options={() => ({
-          title: "Change cover image",
-          animation: "slide_from_bottom",
-          headerBackTitleVisible: false,
-        })}
-      />
     </Stack>
   );
 }

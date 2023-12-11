@@ -38,8 +38,10 @@ const boxesReducer = (boxes, action) => {
         if (action.value.length === 1 && action.value.includes("Starred")) {
           return box.starred;
         } else if (action.value.includes("Starred")) {
-          console.log(box);
-          return box.starred && action.value.includes(box.time);
+          return (
+            box.starred &&
+            (action.value.includes(box.time) || box.time === "Anytime")
+          );
         } else {
           return action.value.includes(box.time) || box.time === "Anytime";
         }
@@ -48,6 +50,19 @@ const boxesReducer = (boxes, action) => {
   } else if (action.type === "getBoxes") {
     const newBoxes = action.value;
     return { newBoxes, filtered: ["None"] };
+  } else if (action.type === "updateStar") {
+    var newBoxes = boxes.newBoxes.map((box) => {
+      if (box.id === action.id) {
+        return action.newValue[0];
+      } else {
+        return box;
+      }
+    });
+
+    return {
+      newBoxes,
+      filtered: ["None"],
+    };
   } else {
     console.error("Unrecognized action", action.type);
   }
@@ -81,6 +96,10 @@ export default function Home() {
     };
     handleFilterBoxes();
   }, [value]);
+
+  const updateStar = (id, newValue) => {
+    dispatch({ type: "updateStar", value: boxes, id: id, newValue: newValue });
+  };
 
   const [fontsLoaded] = useFonts({
     Montserrat: require("../assets/Fonts/Montserrat-Regular.ttf"),
@@ -126,34 +145,34 @@ export default function Home() {
                   label: "Starred",
                   labelStyle: styles.buttonLabelText,
 
-                  style: { backgroundColor: "#CEDC9D" },
+                  style: { backgroundColor: Themes.colors.white },
                   showSelectedCheck: true,
                 },
                 {
                   value: "Morning",
                   label: "Morning",
                   labelStyle: styles.buttonLabelText,
-                  style: { backgroundColor: "#CEDC9D" },
+                  style: { backgroundColor: Themes.colors.white },
                   showSelectedCheck: true,
                 },
                 {
                   value: "Day",
                   label: "Day",
                   labelStyle: styles.buttonLabelText,
-                  style: { backgroundColor: "#CEDC9D" },
+                  style: { backgroundColor: Themes.colors.white },
                   showSelectedCheck: true,
                 },
                 {
                   value: "Night",
                   label: "Night",
                   labelStyle: styles.buttonLabelText,
-                  style: { backgroundColor: "#CEDC9D" },
+                  style: { backgroundColor: Themes.colors.white },
                   showSelectedCheck: true,
                 },
               ]}
             />
 
-            <BoxList />
+            <BoxList updateStar={updateStar} />
           </View>
 
           <StatusBar style="auto" />
@@ -166,7 +185,7 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: Themes.colors.white,
     alignItems: "center",
     justifyContent: "center",
   },

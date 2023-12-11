@@ -76,8 +76,8 @@ export default function DetailScreen() {
                   maxHeight: 40,
                 }}
               >
-                <AntDesign name="clockcircle" size={25} color="#CEDC9D" />
-                <Text style={styles.sectionText}>{params.time}</Text>
+                <AntDesign name="clockcircleo" size={20} color="black" />
+                <Text style={styles.timeText}>{params.time}</Text>
               </View>
 
               <Text style={styles.body}>{params.desc}</Text>
@@ -102,21 +102,9 @@ export default function DetailScreen() {
                 <Text style={styles.sectionText}>Words of Affirmation</Text>
                 <Text style={styles.words}>{params.words}</Text>
               </View>
-              <View>
-                <Text style={styles.sectionText}>Photos</Text>
-                <Text style={styles.words}>{params.words}</Text>
-              </View>
             </View>
           </View>
         </ScrollView>
-        <FAB
-          label="Open Box!"
-          style={styles.fab}
-          mode="flat"
-          onPress={() => console.log("Pressed")}
-          color="black"
-          backgroundColor="#CEDC9D"
-        />
       </SafeAreaView>
     </>
   );
@@ -154,6 +142,10 @@ const styles = StyleSheet.create({
   },
   sectionText: {
     fontFamily: "Montserrat-Bold",
+    fontSize: 16,
+  },
+  timeText: {
+    fontFamily: "Montserrat-Medium",
     fontSize: 16,
   },
   listSection: {

@@ -11,7 +11,7 @@ import {
   ScrollView,
 } from "react-native";
 import { useState, useEffect } from "react";
-
+import Themes from "../assets/Themes/themes.js";
 import {
   FAB,
   TextInput,
@@ -44,11 +44,13 @@ export default function EditBox() {
   const image4 = {
     uri: url4.data.publicUrl,
   };
-  const [chosenImage, setChosenImage] = useState(null);
-
-  const isFocused = useIsFocused();
+  const url5 = Supabase.storage.from("coverImages").getPublicUrl("cover5.jpeg");
+  const image5 = {
+    uri: url5.data.publicUrl,
+  };
   const params = useLocalSearchParams();
   const router = useRouter();
+  const [chosenImage, setChosenImage] = useState(params.coverImg);
 
   const [nameText, setNameText] = useState(undefined);
   const [timeText, setTimeText] = useState(undefined);
@@ -159,7 +161,7 @@ export default function EditBox() {
         itemsNeeded: itemsText ? itemsText.split("\n") : params.itemsNeeded,
         playlists: playlistsText ? playlistsText.split("\n") : params.playlists,
         words: wordsText ? wordsText : params.words,
-        coverImg: params.coverImg, // change later
+        coverImg: chosenImage, // change later
       },
     });
   };
@@ -184,10 +186,12 @@ export default function EditBox() {
       <PaperProvider>
         <SafeAreaView style={styles.container}>
           <KeyboardAwareScrollView
-            contentContainerStyle={{ paddingBottom: 60 }}
+            contentContainerStyle={{ paddingBottom: 30 }}
             extraScrollHeight={50}
+            style={{ width: "100%" }}
           >
             <Image source={image} style={styles.imgHeader} />
+
             <View style={styles.infoContainer}>
               <View style={{ width: "90%" }}>
                 <TextInput
@@ -311,8 +315,8 @@ export default function EditBox() {
               style={styles.fab}
               mode="flat"
               onPress={showCoverDialog}
-              color="white"
-              backgroundColor="rgba(0, 0, 0, 0.7)"
+              color={Themes.colors.white}
+              backgroundColor="black"
               customSize={25}
             />
 
@@ -332,7 +336,7 @@ export default function EditBox() {
                   </Pressable>
 
                   <Pressable onPress={deleteBox}>
-                    <Text style={{ color: "red" }}>Delete</Text>
+                    <Text style={{ color: "red", padding: 5 }}>Delete</Text>
                   </Pressable>
                 </Dialog.Actions>
               </Dialog>
@@ -361,6 +365,9 @@ export default function EditBox() {
                     <Pressable onPress={() => setChosenImage("cover4.jpeg")}>
                       <Image source={image4} style={styles.button} />
                     </Pressable>
+                    <Pressable onPress={() => setChosenImage("cover5.jpeg")}>
+                      <Image source={image5} style={styles.button} />
+                    </Pressable>
                   </ScrollView>
                 </Dialog.Actions>
               </Dialog>
@@ -378,25 +385,27 @@ const styles = StyleSheet.create({
     backgroundColor: "#CEDC9D",
     width: "100%",
   },
+
   container: {
     flex: 1,
     paddingTop: StatusBar.currentHeight,
     paddingBottom: 20,
     justifyContent: "center",
-    backgroundColor: "white",
+    alignItems: "center",
+    backgroundColor: Themes.colors.white,
+    width: "100%",
   },
 
   body: {
     fontFamily: "Montserrat",
     fontSize: 16,
-    backgroundColor: "white",
+    backgroundColor: Themes.colors.offWhite,
     width: "100%",
     paddingBottom: 5,
   },
   radioButtonText: {
     fontFamily: "Montserrat",
     fontSize: 14,
-    backgroundColor: "white",
   },
   label: {
     fontSize: 20,
@@ -406,15 +415,15 @@ const styles = StyleSheet.create({
     width: "100%",
     flex: 1,
     flexDirection: "column",
-    alignItems: "left",
-    justifyContent: "flex-start",
-    padding: 30,
-    gap: 30,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
+    gap: 20,
   },
 
   radioButtonSection: {
     flex: 1,
-    paddingLeft: 20,
+    paddingLeft: 25,
     width: "100%",
   },
   radioButtons: {
@@ -439,13 +448,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 10,
     borderColor: "red",
-    marginLeft: 10,
+    marginLeft: 25,
+    alignSelf: "flex-start",
   },
   buttonLabelText: {
     fontSize: 12,
   },
   dialog: {
-    backgroundColor: "white",
+    backgroundColor: Themes.colors.white,
     borderRadius: 6,
   },
   deleteFont: {
@@ -454,9 +464,10 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 20,
-    width: 300,
-    height: 100,
-    backgroundColor: "#CEDC9D",
+    width: 270,
+    height: 90,
+    backgroundColor: Themes.colors.white,
     borderRadius: 6,
+    alignSelf: "center",
   },
 });

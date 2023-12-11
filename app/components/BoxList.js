@@ -3,7 +3,7 @@ import BoxesContext from "../BoxesContext";
 import { useContext } from "react";
 import SelfCareBox from "./SelfCareBox";
 
-export default function BoxList() {
+export default function BoxList({ updateStar }) {
   const boxes = useContext(BoxesContext);
   const renderBox = ({ item }) => (
     <SelfCareBox
@@ -16,6 +16,8 @@ export default function BoxList() {
       playlists={item.playlists}
       words={item.words}
       coverImg={item.coverImg}
+      starred={item.starred}
+      updateStar={updateStar}
     />
   );
 

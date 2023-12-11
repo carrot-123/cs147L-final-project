@@ -8,38 +8,22 @@ import {
   SafeAreaView,
   ScrollView,
   Pressable,
-  FlatList,
-  AsyncStorage,
-  Button,
-  KeyboardAvoidingView,
-  Alert,
   Image,
 } from "react-native";
-import { useCallback, useReducer, useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Supabase from "./Supabase.js";
 import {
-  SegmentedButtons,
-  Icon,
-  useTheme,
   FAB,
   TextInput,
-  Menu,
   PaperProvider,
   RadioButton,
   Dialog,
   Portal,
   HelperText,
 } from "react-native-paper";
-import { Picker } from "@react-native-picker/picker";
-import { Images, Themes } from "../assets/Themes/index.js";
-import { useFonts } from "expo-font";
-import SelfCareBox from "./components/SelfCareBox.js";
-import BoxList from "./components/BoxList.js";
-import BoxesContext from "./BoxesContext.js";
-import DetailList from "./components/DetailList.js";
-import { AntDesign } from "@expo/vector-icons";
 import { Stack } from "expo-router";
 import { useRouter, Link } from "expo-router";
+import Themes from "../assets/Themes/themes.js";
 
 export default function NewBox() {
   const params = useLocalSearchParams();
@@ -60,6 +44,10 @@ export default function NewBox() {
   const url4 = Supabase.storage.from("coverImages").getPublicUrl("cover4.jpeg");
   const image4 = {
     uri: url4.data.publicUrl,
+  };
+  const url5 = Supabase.storage.from("coverImages").getPublicUrl("cover5.jpeg");
+  const image5 = {
+    uri: url5.data.publicUrl,
   };
   const [chosenImage, setChosenImage] = useState(null);
 
@@ -166,8 +154,9 @@ export default function NewBox() {
       <PaperProvider>
         <SafeAreaView style={styles.container}>
           <KeyboardAwareScrollView
-            contentContainerStyle={{ paddingBottom: 60 }}
+            contentContainerStyle={{ paddingBottom: 30 }}
             extraScrollHeight={50}
+            style={{ width: "100%" }}
           >
             <Image source={image} style={styles.imgHeader} />
             <View style={styles.infoContainer}>
@@ -241,7 +230,7 @@ export default function NewBox() {
                   Please provide a routine
                 </HelperText>
               </View>
-              <View style={{ width: "100%" }}>
+              <View style={{ width: "90%" }}>
                 <TextInput
                   style={styles.body}
                   mode="flat"
@@ -315,7 +304,7 @@ export default function NewBox() {
                   </Pressable>
                   <Link href={{ pathname: "/Home" }} asChild>
                     <Pressable>
-                      <Text style={{ color: "red" }}>Leave</Text>
+                      <Text style={{ color: "red", padding: 5 }}>Leave</Text>
                     </Pressable>
                   </Link>
                 </Dialog.Actions>
@@ -345,6 +334,9 @@ export default function NewBox() {
                     <Pressable onPress={() => setChosenImage("cover4.jpeg")}>
                       <Image source={image4} style={styles.button} />
                     </Pressable>
+                    <Pressable onPress={() => setChosenImage("cover5.jpeg")}>
+                      <Image source={image5} style={styles.button} />
+                    </Pressable>
                   </ScrollView>
                 </Dialog.Actions>
               </Dialog>
@@ -367,20 +359,22 @@ const styles = StyleSheet.create({
     paddingTop: StatusBar.currentHeight,
     paddingBottom: 20,
     justifyContent: "center",
-    backgroundColor: "white",
+    alignItems: "center",
+    backgroundColor: Themes.colors.white,
+    width: "100%",
   },
 
   body: {
     fontFamily: "Montserrat",
     fontSize: 16,
-    backgroundColor: "white",
+    backgroundColor: Themes.colors.offWhite,
     width: "100%",
     paddingBottom: 5,
   },
   radioButtonText: {
     fontFamily: "Montserrat",
     fontSize: 14,
-    backgroundColor: "white",
+    backgroundColor: Themes.colors.white,
   },
   label: {
     fontSize: 20,
@@ -390,15 +384,15 @@ const styles = StyleSheet.create({
     width: "100%",
     flex: 1,
     flexDirection: "column",
-    alignItems: "left",
-    justifyContent: "flex-start",
-    padding: 30,
-    gap: 30,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
+    gap: 20,
   },
 
   radioButtonSection: {
     flex: 1,
-    paddingLeft: 20,
+    paddingLeft: 25,
     width: "100%",
   },
   radioButtons: {
@@ -425,14 +419,15 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   dialog: {
-    backgroundColor: "white",
+    backgroundColor: Themes.colors.white,
     borderRadius: 6,
   },
   button: {
     marginTop: 20,
-    width: 300,
-    height: 100,
-    backgroundColor: "#CEDC9D",
+    width: 270,
+    height: 90,
+    backgroundColor: Themes.colors.white,
     borderRadius: 6,
+    alignSelf: "center",
   },
 });

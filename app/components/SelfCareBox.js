@@ -34,11 +34,13 @@ export default function SelfCareBox({
 
   useEffect(() => {
     const update = async () => {
-      const { data, error } = await Supabase.from("selfCareBoxes")
-        .update({ starred: star })
-        .eq("id", id)
-        .select();
-      updateStar(id, data);
+      if (starred !== star) {
+        const { data, error } = await Supabase.from("selfCareBoxes")
+          .update({ starred: star })
+          .eq("id", id)
+          .select();
+        updateStar(id, data);
+      }
     };
 
     update();

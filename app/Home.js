@@ -30,8 +30,8 @@ const boxesReducer = (boxes, action) => {
           return box.starred;
         } else if (action.value.includes("Starred")) {
           return (
-            box.starred &&
-            (action.value.includes(box.time) || box.time === "Anytime")
+            (box.starred && action.value.includes(box.time)) ||
+            (box.starred && box.time === "Anytime")
           );
         } else {
           return action.value.includes(box.time) || box.time === "Anytime";
@@ -91,6 +91,7 @@ export default function Home() {
 
   const updateStar = (id, newValue) => {
     dispatch({ type: "updateStar", value: boxes, id: id, newValue: newValue });
+    console.log("here?");
   };
 
   const [fontsLoaded] = useFonts({
@@ -136,7 +137,6 @@ export default function Home() {
                   value: "Starred",
                   label: "Starred",
                   labelStyle: styles.buttonLabelText,
-
                   style: { backgroundColor: Themes.colors.white },
                   showSelectedCheck: true,
                 },

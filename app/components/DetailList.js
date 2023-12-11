@@ -1,15 +1,4 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  SafeAreaView,
-  FlatList,
-  AsyncStorage,
-} from "react-native";
-import BoxesContext from "../BoxesContext";
-import { useContext } from "react";
-import SelfCareBox from "./SelfCareBox";
-import { List } from "react-native-paper";
+import { StyleSheet, Text } from "react-native";
 
 export default function DetailList({ listValues }) {
   const listValueArray = listValues.split(",");

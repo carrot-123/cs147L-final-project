@@ -1,7 +1,4 @@
 import { Stack } from "expo-router/stack";
-import { IconButton } from "react-native-paper";
-import { Pressable, StyleSheet, Text, View, Button } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
 
 export default function Layout() {
   return (

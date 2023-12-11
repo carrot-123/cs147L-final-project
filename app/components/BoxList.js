@@ -1,6 +1,6 @@
 import { FlatList } from "react-native";
-import BoxesContext from "../BoxesContext";
 import { useContext } from "react";
+import BoxesContext from "../BoxesContext";
 import SelfCareBox from "./SelfCareBox";
 
 export default function BoxList({ updateStar }) {

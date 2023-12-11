@@ -1,6 +1,3 @@
-import { useLocalSearchParams } from "expo-router";
-import { StatusBar } from "expo-status-bar";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import {
   StyleSheet,
   Text,
@@ -10,8 +7,6 @@ import {
   Image,
   ScrollView,
 } from "react-native";
-import { useState, useEffect } from "react";
-import Themes from "../assets/Themes/themes.js";
 import {
   FAB,
   TextInput,
@@ -21,13 +16,18 @@ import {
   Portal,
   HelperText,
 } from "react-native-paper";
-import { AntDesign } from "@expo/vector-icons";
-import { Stack } from "expo-router";
-import { useRouter, Link } from "expo-router";
+import { useState, useEffect } from "react";
+import { StatusBar } from "expo-status-bar";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { useRouter, Stack, useLocalSearchParams } from "expo-router";
+
+import Themes from "../assets/Themes/themes.js";
 import Supabase from "./Supabase.js";
-import { useIsFocused } from "@react-navigation/native";
 
 export default function EditBox() {
+  const params = useLocalSearchParams();
+  const router = useRouter();
+
   const url1 = Supabase.storage.from("coverImages").getPublicUrl("cover1.jpeg");
   const image1 = {
     uri: url1.data.publicUrl,
@@ -48,10 +48,8 @@ export default function EditBox() {
   const image5 = {
     uri: url5.data.publicUrl,
   };
-  const params = useLocalSearchParams();
-  const router = useRouter();
-  const [chosenImage, setChosenImage] = useState(params.coverImg);
 
+  const [chosenImage, setChosenImage] = useState(params.coverImg);
   const [nameText, setNameText] = useState(undefined);
   const [timeText, setTimeText] = useState(undefined);
   const [descText, setDescText] = useState(undefined);
@@ -85,6 +83,7 @@ export default function EditBox() {
     setCover();
     hideCoverDialog();
   }, [chosenImage]);
+
   useEffect(() => {
     setImage({ uri: url.data.publicUrl });
   }, [url]);
@@ -191,7 +190,6 @@ export default function EditBox() {
             style={{ width: "100%" }}
           >
             <Image source={image} style={styles.imgHeader} />
-
             <View style={styles.infoContainer}>
               <View style={{ width: "90%" }}>
                 <TextInput
@@ -207,7 +205,6 @@ export default function EditBox() {
                   Please provide a name
                 </HelperText>
               </View>
-
               <View style={styles.radioButtonSection}>
                 <Text style={[styles.label, { fontSize: 15 }]}>Time</Text>
                 <RadioButton.Group
@@ -309,7 +306,6 @@ export default function EditBox() {
                 <Text style={styles.deleteFont}>Delete Box</Text>
               </Pressable>
             </View>
-
             <FAB
               label="Change cover"
               style={styles.fab}
@@ -319,7 +315,6 @@ export default function EditBox() {
               backgroundColor="black"
               customSize={25}
             />
-
             <Portal>
               <Dialog
                 visible={visible}
@@ -350,7 +345,6 @@ export default function EditBox() {
                 <Dialog.Title style={styles.label}>
                   Choose a new cover image:
                 </Dialog.Title>
-
                 <Dialog.Actions>
                   <ScrollView>
                     <Pressable onPress={() => setChosenImage("cover1.jpeg")}>
@@ -385,7 +379,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#CEDC9D",
     width: "100%",
   },
-
   container: {
     flex: 1,
     paddingTop: StatusBar.currentHeight,
@@ -395,7 +388,6 @@ const styles = StyleSheet.create({
     backgroundColor: Themes.colors.white,
     width: "100%",
   },
-
   body: {
     fontFamily: "Montserrat",
     fontSize: 16,
@@ -420,7 +412,6 @@ const styles = StyleSheet.create({
     padding: 20,
     gap: 20,
   },
-
   radioButtonSection: {
     flex: 1,
     paddingLeft: 25,
@@ -433,7 +424,6 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 30,
   },
-
   fab: {
     position: "absolute",
     marginTop: 20,

@@ -1,27 +1,16 @@
-import { useLocalSearchParams } from "expo-router";
-import { StatusBar } from "expo-status-bar";
 import {
   StyleSheet,
   Text,
   View,
   SafeAreaView,
   ScrollView,
-  FlatList,
-  AsyncStorage,
-  Button,
   Image,
 } from "react-native";
-import { useCallback, useReducer, useState, useEffect } from "react";
-import { Link } from "expo-router";
-import { SegmentedButtons, Icon, useTheme, FAB } from "react-native-paper";
-import { Images, Themes } from "../assets/Themes/index.js";
-import { useFonts } from "expo-font";
-import SelfCareBox from "./components/SelfCareBox.js";
-import BoxList from "./components/BoxList.js";
-import BoxesContext from "./BoxesContext.js";
-import DetailList from "./components/DetailList.js";
+import { Link, Stack, useLocalSearchParams } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 import { AntDesign } from "@expo/vector-icons";
-import { Stack } from "expo-router";
+
+import DetailList from "./components/DetailList.js";
 import Supabase from "./Supabase.js";
 
 export default function DetailScreen() {
@@ -59,11 +48,9 @@ export default function DetailScreen() {
           ),
         }}
       />
-
       <SafeAreaView style={styles.container}>
         <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
           <Image source={image} style={styles.imgHeader} />
-
           <View style={styles.infoContainer}>
             <View>
               <Text style={styles.headerText}>{params.name}</Text>
@@ -79,10 +66,8 @@ export default function DetailScreen() {
                 <AntDesign name="clockcircleo" size={20} color="black" />
                 <Text style={styles.timeText}>{params.time}</Text>
               </View>
-
               <Text style={styles.body}>{params.desc}</Text>
             </View>
-
             <View style={styles.listSection}>
               <View>
                 <Text style={styles.sectionText}>Self Care Routine</Text>
@@ -92,12 +77,10 @@ export default function DetailScreen() {
                 <Text style={styles.sectionText}>Items Needed</Text>
                 <DetailList listValues={params.itemsNeeded} />
               </View>
-
               <View>
                 <Text style={styles.sectionText}>Recommended Playlists</Text>
                 <DetailList listValues={params.playlists} />
               </View>
-
               <View>
                 <Text style={styles.sectionText}>Words of Affirmation</Text>
                 <Text style={styles.words}>{params.words}</Text>
@@ -156,16 +139,5 @@ const styles = StyleSheet.create({
   words: {
     fontFamily: "Montserrat-Italic",
     marginLeft: 20,
-  },
-  fab: {
-    position: "absolute",
-    marginBottom: 40,
-    alignSelf: "center",
-    bottom: 0,
-    paddingLeft: 10,
-    paddingRight: 10,
-    paddingTop: 5,
-    paddingBottom: 5,
-    backgroundColor: "#CEDC9D",
   },
 });

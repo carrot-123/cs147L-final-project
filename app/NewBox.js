@@ -1,6 +1,3 @@
-import { useLocalSearchParams } from "expo-router";
-import { StatusBar } from "expo-status-bar";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import {
   StyleSheet,
   Text,
@@ -10,8 +7,6 @@ import {
   Pressable,
   Image,
 } from "react-native";
-import { useState, useEffect } from "react";
-import Supabase from "./Supabase.js";
 import {
   FAB,
   TextInput,
@@ -21,9 +16,13 @@ import {
   Portal,
   HelperText,
 } from "react-native-paper";
-import { Stack } from "expo-router";
-import { useRouter, Link } from "expo-router";
+import { useState, useEffect } from "react";
+import { useRouter, Link, Stack, useLocalSearchParams } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+
 import Themes from "../assets/Themes/themes.js";
+import Supabase from "./Supabase.js";
 
 export default function NewBox() {
   const params = useLocalSearchParams();
@@ -49,8 +48,8 @@ export default function NewBox() {
   const image5 = {
     uri: url5.data.publicUrl,
   };
-  const [chosenImage, setChosenImage] = useState(null);
 
+  const [chosenImage, setChosenImage] = useState(null);
   const [nameText, setNameText] = useState(undefined);
   const [timeText, setTimeText] = useState(undefined);
   const [descText, setDescText] = useState(undefined);
@@ -84,6 +83,7 @@ export default function NewBox() {
     setCover();
     hideCoverDialog();
   }, [chosenImage]);
+
   useEffect(() => {
     setImage({ uri: url.data.publicUrl });
   }, [url]);
@@ -174,7 +174,6 @@ export default function NewBox() {
                   Please provide a name
                 </HelperText>
               </View>
-
               <View style={styles.radioButtonSection}>
                 <Text style={[styles.label, { fontSize: 15 }]}>Time</Text>
                 <RadioButton.Group
@@ -297,7 +296,6 @@ export default function NewBox() {
                 <Dialog.Title style={styles.label}>
                   Leave without Saving?
                 </Dialog.Title>
-
                 <Dialog.Actions>
                   <Pressable onPress={hideDialog}>
                     <Text>Cancel</Text>
@@ -319,7 +317,6 @@ export default function NewBox() {
                 <Dialog.Title style={styles.label}>
                   Choose a new cover image:
                 </Dialog.Title>
-
                 <Dialog.Actions>
                   <ScrollView>
                     <Pressable onPress={() => setChosenImage("cover1.jpeg")}>
@@ -363,7 +360,6 @@ const styles = StyleSheet.create({
     backgroundColor: Themes.colors.white,
     width: "100%",
   },
-
   body: {
     fontFamily: "Montserrat",
     fontSize: 16,
@@ -389,7 +385,6 @@ const styles = StyleSheet.create({
     padding: 20,
     gap: 20,
   },
-
   radioButtonSection: {
     flex: 1,
     paddingLeft: 25,
@@ -402,7 +397,6 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 30,
   },
-
   fab: {
     position: "absolute",
     marginTop: 20,
@@ -411,12 +405,6 @@ const styles = StyleSheet.create({
     top: 0,
     padding: 0,
     margin: 0,
-  },
-  segmentedButton: {
-    width: "90%",
-  },
-  buttonLabelText: {
-    fontSize: 12,
   },
   dialog: {
     backgroundColor: Themes.colors.white,

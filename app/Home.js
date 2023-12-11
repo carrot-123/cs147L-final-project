@@ -1,25 +1,17 @@
-import { StatusBar } from "expo-status-bar";
-import {
-  StyleSheet,
-  Text,
-  View,
-  SafeAreaView,
-  FlatList,
-  Pressable,
-  AsyncStorage,
-} from "react-native";
+import { StyleSheet, Text, View, SafeAreaView, Pressable } from "react-native";
 import { useCallback, useReducer, useState, useEffect } from "react";
-import { SegmentedButtons, Icon, useTheme } from "react-native-paper";
-import { Images, Themes } from "../assets/Themes/index.js";
+import { SegmentedButtons } from "react-native-paper";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import SelfCareBox from "./components/SelfCareBox.js";
+import { StatusBar } from "expo-status-bar";
+import { AntDesign } from "@expo/vector-icons";
+import { useIsFocused } from "@react-navigation/native";
+import { Link } from "expo-router";
+
+import { Themes } from "../assets/Themes/index.js";
 import BoxList from "./components/BoxList.js";
 import BoxesContext from "./BoxesContext.js";
-import { AntDesign } from "@expo/vector-icons";
-import { Link } from "expo-router";
 import Supabase from "./Supabase.js";
-import { useIsFocused } from "@react-navigation/native";
 
 const INITIAL_BOXES = [];
 
@@ -31,7 +23,6 @@ const boxesReducer = (boxes, action) => {
         filtered: ["None"],
       };
     }
-
     return {
       ...boxes,
       filtered: boxes.newBoxes.filter((box) => {
@@ -58,7 +49,6 @@ const boxesReducer = (boxes, action) => {
         return box;
       }
     });
-
     return {
       newBoxes,
       filtered: ["None"],
@@ -69,13 +59,15 @@ const boxesReducer = (boxes, action) => {
 };
 
 SplashScreen.preventAutoHideAsync();
+
 export default function Home() {
+  const isFocused = useIsFocused();
+
   const [value, setValue] = useState([]);
   const [boxes, dispatch] = useReducer(boxesReducer, {
     INITIAL_BOXES,
     filtered: null,
   });
-  const isFocused = useIsFocused();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -107,6 +99,7 @@ export default function Home() {
     "Montserrat-Medium": require("../assets/Fonts/Montserrat-Medium.ttf"),
     "Montserrat-Italic": require("../assets/Fonts/Montserrat-Italic.ttf"),
   });
+
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
       await SplashScreen.hideAsync();
@@ -129,7 +122,6 @@ export default function Home() {
               <AntDesign name="pluscircleo" size={25} color="black" />
             </Pressable>
           </Link>
-
           <View style={styles.header}>
             <Text style={styles.headerText}>Your self care boxes</Text>
           </View>
@@ -171,10 +163,8 @@ export default function Home() {
                 },
               ]}
             />
-
             <BoxList updateStar={updateStar} />
           </View>
-
           <StatusBar style="auto" />
         </SafeAreaView>
       </View>

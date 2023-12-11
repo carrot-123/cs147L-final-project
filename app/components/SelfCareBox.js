@@ -1,19 +1,17 @@
-import { StatusBar } from "expo-status-bar";
 import {
   StyleSheet,
   Text,
   View,
   Pressable,
-  Image,
   ImageBackground,
-  ButtonIcon,
 } from "react-native";
-import { useCallback, useState, useEffect } from "react";
-import { Icon, useTheme } from "react-native-paper";
-import { Images, Themes } from "../../assets/Themes";
-import { Link, router } from "expo-router";
+import { useState, useEffect } from "react";
+import { Link } from "expo-router";
 import { AntDesign } from "@expo/vector-icons";
+
+import { Themes } from "../../assets/Themes";
 import Supabase from "../Supabase";
+
 export default function SelfCareBox({
   id,
   name,
@@ -31,10 +29,9 @@ export default function SelfCareBox({
   const image = {
     uri: url.data.publicUrl,
   };
+
   const [star, setStar] = useState(starred);
-  const updateStarIcon = () => {
-    setStar(!star);
-  };
+
   useEffect(() => {
     const update = async () => {
       const { data, error } = await Supabase.from("selfCareBoxes")
@@ -46,6 +43,10 @@ export default function SelfCareBox({
 
     update();
   }, [star]);
+
+  const updateStarIcon = () => {
+    setStar(!star);
+  };
 
   return (
     <View style={styles.item}>
@@ -110,7 +111,6 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-
     width: 300,
     marginTop: 20,
   },
@@ -130,15 +130,11 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 100,
     backgroundColor: Themes.colors.white,
-
     borderRadius: 6,
   },
   name: {
     fontFamily: "Montserrat-Bold",
     fontSize: 16,
-  },
-  body: {
-    fontFamily: "Montserrat",
   },
   desc: {
     fontFamily: "Montserrat",

@@ -91,7 +91,6 @@ export default function Home() {
 
   const updateStar = (id, newValue) => {
     dispatch({ type: "updateStar", value: boxes, id: id, newValue: newValue });
-    console.log("here?");
   };
 
   const [fontsLoaded] = useFonts({
